@@ -20,8 +20,13 @@ const BrevoWebhooksController = () => import('#controllers/brevo_webhooks_contro
 const PasswordResetsController = () => import('#controllers/password_resets_controller')
 const MfaController = () => import('#controllers/mfa_controller')
 const SecuritySettingsController = () => import('#controllers/security_settings_controller')
+const LegalController = () => import('#controllers/legal_controller')
 
 router.get('/', async ({ inertia }) => inertia.render('home', {})).as('home')
+router
+  .get('/:page', [LegalController, 'show'])
+  .where('page', /^(mentions-legales|confidentialite|cgu|sous-traitants)$/)
+  .as('legal.show')
 router.post('/contact', [ContactRequestsController, 'store']).as('contact.store')
 router.post('/webhooks/brevo', [BrevoWebhooksController, 'handle']).as('webhooks.brevo')
 router.get('/invitations/:token', [InvitationAcceptancesController, 'show']).as('invitations.show')

@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
-import { Bell, Check, ChevronRight, HeartPulse, Mail, ShieldCheck, UserPlus } from 'lucide-react'
+import { Bell, Check, ChevronRight, Mail, ShieldCheck, UserPlus } from 'lucide-react'
 
 type Notification = {
   id: string
@@ -13,7 +13,6 @@ type Notification = {
 }
 
 const icons: Record<string, typeof Bell> = {
-  health: HeartPulse,
   guardian_invitation: UserPlus,
   message: Mail,
   system: ShieldCheck,
@@ -79,10 +78,7 @@ export default function Notifications({ notifications }: { notifications: Notifi
           <div className="empty-state">
             <Bell />
             <h2>Tout est calme</h2>
-            <p>
-              Les nouvelles transmissions, messages, informations de santé et invitations
-              apparaîtront ici.
-            </p>
+            <p>Les nouvelles transmissions, messages et invitations apparaîtront ici.</p>
           </div>
         )}
       </section>

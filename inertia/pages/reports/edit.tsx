@@ -42,11 +42,19 @@ type Props = {
     endedAt?: string | null
     authorName: string
   }>
+  healthDataEnabled: boolean
 }
 
 const quickEventLabels = { meal: 'Repas', nap: 'Sieste', diaper: 'Change' }
 
-export default function EditReport({ child, role, reportDate, report, quickEvents }: Props) {
+export default function EditReport({
+  child,
+  role,
+  reportDate,
+  report,
+  quickEvents,
+  healthDataEnabled,
+}: Props) {
   const readonly = role === 'parent'
   const [mood, setMood] = useState(report?.mood ?? '')
   const [temperature, setTemperature] = useState(report?.temperature ?? '')
@@ -211,37 +219,42 @@ export default function EditReport({ child, role, reportDate, report, quickEvent
           readonly={readonly}
           placeholder="Ex. Peinture, promenade"
         />
-        <section className="form-card full">
-          <div className="card-title">
-            <Thermometer />
-            <div>
-              <h2>Santé & température</h2>
-              <p>À renseigner seulement si nécessaire.</p>
+        {healthDataEnabled && (
+          <section className="form-card full">
+            <div className="card-title">
+              <Thermometer />
+              <div>
+                <h2>Santé & température</h2>
+                <p>À renseigner seulement si nécessaire.</p>
+              </div>
             </div>
-          </div>
-          <div className="temperature-field">
-            <label htmlFor="temperature">Température</label>
-            <div>
-              <input
-                id="temperature"
-                type="number"
-                min="34"
-                max="43"
-                step="0.1"
-                value={temperature}
-                onChange={(e) => setTemperature(e.target.value)}
-                disabled={readonly}
-              />
-              <span>°C</span>
+            <div className="temperature-field">
+              <label htmlFor="temperature">Température</label>
+              <div>
+                <input
+                  id="temperature"
+                  type="number"
+                  min="34"
+                  max="43"
+                  step="0.1"
+                  value={temperature}
+                  onChange={(e) => setTemperature(e.target.value)}
+                  disabled={readonly}
+                />
+                <span>°C</span>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
         <section className="form-card full">
           <div className="card-title">
             <Sparkles />
             <div>
               <h2>Le petit mot du jour</h2>
-              <p>Retrouve ici l’éditeur riche de silvus.me, adapté à la transmission.</p>
+              <p>
+                Une note quotidienne sans allergie, traitement ou autre information médicale pendant
+                le pilote.
+              </p>
             </div>
           </div>
           {readonly ? (

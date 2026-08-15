@@ -582,6 +582,115 @@ input:focus-visible,
   padding: 2rem 1rem;
   background: var(--bg);
 }
+.legal-page {
+  min-height: 100vh;
+  padding: clamp(1rem, 4vw, 4rem);
+  background: var(--bg);
+}
+.legal-document {
+  width: min(100%, 900px);
+  margin: 0 auto;
+}
+.legal-document > header {
+  padding: 2.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.legal-document > header img {
+  width: 150px;
+  margin-bottom: 2rem;
+}
+.legal-document > header h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  margin: 0.4rem 0;
+}
+.legal-content section {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.legal-content h2 {
+  font-size: 1.35rem;
+}
+.legal-content p,
+.legal-content li,
+.legal-content dd {
+  line-height: 1.75;
+  color: var(--muted);
+}
+.legal-content a {
+  color: var(--sage-dark);
+  text-decoration: underline;
+}
+.legal-content a svg {
+  width: 14px;
+  display: inline;
+}
+.legal-content dl {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) 1fr;
+  gap: 0.6rem 1rem;
+}
+.legal-content dt {
+  font-weight: 800;
+}
+.legal-content dd {
+  margin: 0;
+}
+.legal-warning,
+.pilot-notice {
+  display: flex;
+  gap: 0.9rem;
+  padding: 1rem 1.2rem;
+  margin: 1.5rem 0;
+  border: 1px solid var(--warning);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--warning) 10%, var(--surface));
+}
+.legal-warning svg,
+.pilot-notice svg {
+  width: 22px;
+  flex: 0 0 auto;
+}
+.legal-warning p,
+.pilot-notice p {
+  margin: 0;
+  line-height: 1.55;
+}
+.legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.2rem;
+  padding: 2rem 0;
+}
+.legal-nav a {
+  font-weight: 700;
+  color: var(--sage-dark);
+}
+.legal-table {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.legal-table [role='row'] {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--surface);
+}
+@media (max-width: 640px) {
+  .legal-content dl {
+    grid-template-columns: 1fr;
+  }
+  .legal-content dd {
+    margin-bottom: 0.7rem;
+  }
+  .legal-table [role='row'] {
+    grid-template-columns: 1fr;
+  }
+}
 .auth-simple-card {
   width: min(100%, 480px);
   padding: clamp(1.5rem, 5vw, 3rem);

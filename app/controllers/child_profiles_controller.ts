@@ -3,6 +3,7 @@ import db from '@adonisjs/lucid/services/db'
 import { assertChildAccess, getMamContext, type MamContext } from '#services/access_service'
 import NotificationService, { type NotificationCategory } from '#services/notification_service'
 import { cleanRichText } from '#services/rich_text_service'
+import { features } from '#config/features'
 
 const dateOrNull = (value: unknown) =>
   /^\d{4}-\d{2}-\d{2}$/.test(String(value ?? '')) ? String(value) : null
@@ -53,19 +54,21 @@ export default class ChildProfilesController {
           'notes_html as notesHtml',
           'decided_at as decidedAt'
         ),
-      db
-        .from('health_entries')
-        .join('users', 'users.id', 'health_entries.author_id')
-        .where({ 'health_entries.mam_id': context.mamId, 'health_entries.child_id': child.id })
-        .orderBy('health_entries.created_at', 'desc')
-        .limit(50)
-        .select(
-          'health_entries.id',
-          'health_entries.kind',
-          'health_entries.content_html as contentHtml',
-          'health_entries.created_at as createdAt',
-          'users.full_name as authorName'
-        ),
+      features.healthData
+        ? db
+            .from('health_entries')
+            .join('users', 'users.id', 'health_entries.author_id')
+            .where({ 'health_entries.mam_id': context.mamId, 'health_entries.child_id': child.id })
+            .orderBy('health_entries.created_at', 'desc')
+            .limit(50)
+            .select(
+              'health_entries.id',
+              'health_entries.kind',
+              'health_entries.content_html as contentHtml',
+              'health_entries.created_at as createdAt',
+              'users.full_name as authorName'
+            )
+        : Promise.resolve([]),
     ])
     return inertia.render('children/profile', {
       role: context.role,
@@ -76,17 +79,24 @@ export default class ChildProfilesController {
         birthDate: child.birth_date,
         careStartedAt: child.care_started_at,
         careEndedAt: child.care_ended_at,
-        allergies: child.allergies,
-        medicalNotesHtml: child.medical_notes_html,
-        doctorName: child.doctor_name,
-        doctorPhone: child.doctor_phone,
-        emergencyInstructionsHtml: child.emergency_instructions_html,
         dietaryNotesHtml: child.dietary_notes_html,
         routinesHtml: child.routines_html,
+        ...(features.healthData
+          ? {
+              allergies: child.allergies,
+              medicalNotesHtml: child.medical_notes_html,
+              doctorName: child.doctor_name,
+              doctorPhone: child.doctor_phone,
+              emergencyInstructionsHtml: child.emergency_instructions_html,
+            }
+          : {}),
       },
       contacts,
-      authorizations,
+      authorizations: features.healthData
+        ? authorizations
+        : authorizations.filter((authorization) => authorization.kind !== 'medication'),
       healthEntries,
+      healthDataEnabled: features.healthData,
       permissions: {
         canEditProfile: true,
         canManageContacts: context.role !== 'assistant',
@@ -114,14 +124,16 @@ export default class ChildProfilesController {
       'careEndedAt',
     ])
     const payload: Record<string, unknown> = {
-      allergies: textOrNull(body.allergies, 2_000),
-      medical_notes_html: cleanRichText(body.medicalNotesHtml),
-      doctor_name: textOrNull(body.doctorName, 160),
-      doctor_phone: textOrNull(body.doctorPhone, 32),
-      emergency_instructions_html: cleanRichText(body.emergencyInstructionsHtml),
       dietary_notes_html: cleanRichText(body.dietaryNotesHtml),
       routines_html: cleanRichText(body.routinesHtml),
       updated_at: new Date(),
+    }
+    if (features.healthData) {
+      payload.allergies = textOrNull(body.allergies, 2_000)
+      payload.medical_notes_html = cleanRichText(body.medicalNotesHtml)
+      payload.doctor_name = textOrNull(body.doctorName, 160)
+      payload.doctor_phone = textOrNull(body.doctorPhone, 32)
+      payload.emergency_instructions_html = cleanRichText(body.emergencyInstructionsHtml)
     }
     if (context.role === 'admin') {
       payload.care_started_at = dateOrNull(body.careStartedAt)
@@ -130,7 +142,7 @@ export default class ChildProfilesController {
     await db.from('children').where({ id: child.id, mam_id: context.mamId }).update(payload)
     await this.audit(context.mamId, user.id, 'child.profile.updated', child.id)
     await this.notifyCounterpart(context, child.id, user.id, {
-      category: 'health',
+      category: features.healthData ? 'health' : 'message',
       type: 'child.profile.updated',
       title: `Le dossier de ${child.first_name} a été mis à jour`,
       body: 'Une information du dossier enfant a changé. Consultez l’espace sécurisé pour la vérifier.',
@@ -140,6 +152,7 @@ export default class ChildProfilesController {
   }
 
   async addHealthEntry({ auth, request, params, response, session }: HttpContext) {
+    if (!features.healthData) return response.notFound()
     const user = auth.getUserOrFail()
     const context = await getMamContext(user)
     if (!context) return response.forbidden()
@@ -239,6 +252,7 @@ export default class ChildProfilesController {
       'medication',
       'other',
     ])
+    if (!features.healthData) kinds.delete('medication')
     const statuses = new Set(['pending', 'granted', 'refused', 'revoked'])
     if (!kinds.has(params.kind) || !statuses.has(request.input('status')))
       return response.badRequest()

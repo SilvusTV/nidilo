@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { getMamContext } from '#services/access_service'
+import { features } from '#config/features'
 
 function isoDate(value: unknown) {
   if (value instanceof Date) return value.toISOString().slice(0, 10)
@@ -30,9 +31,9 @@ export default class DashboardController {
         'children.id',
         'children.first_name as firstName',
         'children.last_name as lastName',
-        'children.birth_date as birthDate',
-        'children.allergies'
+        'children.birth_date as birthDate'
       )
+    if (features.healthData) childrenQuery.select('children.allergies')
 
     if (context.role === 'parent') {
       childrenQuery = childrenQuery
@@ -83,6 +84,7 @@ export default class DashboardController {
           latestReportDate: latestByChild.get(child.id) ?? null,
         })),
         unreadReports: Number(unreadReports?.total ?? 0),
+        healthDataEnabled: features.healthData,
       })
     }
     const today = new Date().toISOString().slice(0, 10)

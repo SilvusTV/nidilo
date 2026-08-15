@@ -12,6 +12,7 @@ type Props = {
     categorySettings?: Record<string, boolean>
   } | null
   contact: { email: string; phone?: string | null }
+  healthDataEnabled: boolean
 }
 
 const categories = [
@@ -22,7 +23,7 @@ const categories = [
   ['establishment', 'Informations de la MAM'],
 ] as const
 
-export default function NotificationSettings({ preferences, contact }: Props) {
+export default function NotificationSettings({ preferences, contact, healthDataEnabled }: Props) {
   const [emailEnabled, setEmail] = useState(preferences?.emailEnabled ?? false)
   const [smsEnabled, setSms] = useState(preferences?.smsEnabled ?? false)
   const [quietHoursEnabled, setQuiet] = useState(preferences?.quietHoursEnabled ?? false)
@@ -91,14 +92,16 @@ export default function NotificationSettings({ preferences, contact }: Props) {
               <p>L’historique dans le site reste toujours complet.</p>
             </div>
           </div>
-          {categories.map(([key, label]) => (
-            <Toggle
-              key={key}
-              title={label}
-              checked={categorySettings[key] !== false}
-              onChange={(checked) => setCategories({ ...categorySettings, [key]: checked })}
-            />
-          ))}
+          {categories
+            .filter(([key]) => healthDataEnabled || key !== 'health')
+            .map(([key, label]) => (
+              <Toggle
+                key={key}
+                title={label}
+                checked={categorySettings[key] !== false}
+                onChange={(checked) => setCategories({ ...categorySettings, [key]: checked })}
+              />
+            ))}
         </article>
         <article className="settings-card">
           <div className="settings-card-title">

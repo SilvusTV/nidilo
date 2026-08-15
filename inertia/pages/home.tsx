@@ -333,7 +333,7 @@ export default function Home({ cspNonce }: { cspNonce: string }) {
                 <ClipboardCheck />
               </span>
               <h3>Une fiche quotidienne complète</h3>
-              <p>Humeur, chronologie, santé, activités et note riche réunies au même endroit.</p>
+              <p>Humeur, chronologie, activités et note riche réunies au même endroit.</p>
             </article>
             <article>
               <span className="feature-icon blue">
@@ -424,7 +424,7 @@ export default function Home({ cspNonce }: { cspNonce: string }) {
                   <Check /> Calendrier des fiches
                 </li>
                 <li>
-                  <Check /> Informations santé
+                  <Check /> Habitudes et contacts utiles
                 </li>
                 <li>
                   <Check /> Alertes personnalisables
@@ -645,7 +645,8 @@ export default function Home({ cspNonce }: { cspNonce: string }) {
                   <input name="consent" type="checkbox" value="1" required />
                   <span>
                     J’accepte que Nidilo utilise ces informations pour répondre à ma demande. Elles
-                    sont conservées au maximum 12 mois et ne sont pas revendues.
+                    sont conservées au maximum 12 mois et ne sont pas revendues.{' '}
+                    <a href="/confidentialite">En savoir plus</a>.
                   </span>
                 </label>
                 {errors.consent && <small className="contact-error">{errors.consent}</small>}
@@ -677,6 +678,9 @@ export default function Home({ cspNonce }: { cspNonce: string }) {
           <a href="#pour-qui">Professionnelles et familles</a>
           <a href="#securite">Sécurité</a>
           <a href="#contact">Contact</a>
+          <a href="/confidentialite">Confidentialité</a>
+          <a href="/mentions-legales">Mentions légales</a>
+          <a href="/cgu">CGU</a>
           <a href="/login">Connexion</a>
         </nav>
         <p>© {new Date().getFullYear()} Nidilo · Conçu avec soin pour les MAM et les familles.</p>

@@ -48,4 +48,15 @@ export default await Env.create(new URL('../', import.meta.url), {
   BREVO_API_URL: Env.schema.string.optional({ format: 'url', tld: false }),
   BREVO_SMS_SENDER: Env.schema.string.optional(),
   BREVO_WEBHOOK_TOKEN: Env.schema.string.optional(),
+
+  // Pilot feature flags
+  HEALTH_DATA_ENABLED: Env.schema.boolean.optional(),
+
+  // Public legal identity (mandatory before opening the pilot)
+  LEGAL_PUBLISHER_NAME: Env.schema.string.optional(),
+  LEGAL_PUBLISHER_ADDRESS: Env.schema.string.optional(),
+  LEGAL_PUBLISHER_EMAIL: Env.schema.string.optional(),
+  LEGAL_PUBLISHER_PHONE: Env.schema.string.optional(),
+  LEGAL_HOST_NAME: Env.schema.string.optional(),
+  LEGAL_HOST_ADDRESS: Env.schema.string.optional(),
 })

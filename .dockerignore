@@ -1,4 +1,8 @@
 node_modules
+.git
+build
+artifacts
+.env
 build
 .git
 .env

@@ -6,7 +6,10 @@ import User from '#models/user'
 test.group('Children administration', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
 
-  test('an admin creates a child inside their MAM', async ({ client, assert }) => {
+  test('an admin creates a child without storing pilot medical data', async ({
+    client,
+    assert,
+  }) => {
     const admin = await User.findByOrFail('email', 'admin@nidilo.test')
     const mam = await db
       .from('memberships')
@@ -28,7 +31,7 @@ test.group('Children administration', (group) => {
       .first()
     assert.exists(child)
     assert.match(child.id, /^[0-9a-f-]{36}$/i)
-    assert.equal(child.allergies, 'Aucune connue')
+    assert.isNull(child.allergies)
   })
 
   test('an assistant cannot create a child', async ({ client }) => {

@@ -16,10 +16,12 @@ export default function ParentDashboard({
   mam,
   wards,
   unreadReports,
+  healthDataEnabled,
 }: {
   mam: { name: string }
   wards: Child[]
   unreadReports: number
+  healthDataEnabled: boolean
 }) {
   return (
     <div className="dashboard-page parent-dashboard">
@@ -54,7 +56,7 @@ export default function ParentDashboard({
                 </span>
               </div>
             </header>
-            {child.allergies && (
+            {healthDataEnabled && child.allergies && (
               <p className="parent-alert">Allergie ou vigilance renseignée dans le dossier</p>
             )}
             <div className="parent-child-actions">
@@ -62,7 +64,7 @@ export default function ParentDashboard({
                 <FileHeart />
                 <span>
                   <strong>Informations de l’enfant</strong>
-                  <small>Santé, habitudes et contacts</small>
+                  <small>Habitudes, contacts et autorisations</small>
                 </span>
                 <ChevronRight />
               </Link>

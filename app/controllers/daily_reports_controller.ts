@@ -4,6 +4,7 @@ import { assertChildAccess, getMamContext } from '#services/access_service'
 import NotificationService from '#services/notification_service'
 import { cleanRichText } from '#services/rich_text_service'
 import { DateTime } from 'luxon'
+import { features } from '#config/features'
 
 export { cleanRichText } from '#services/rich_text_service'
 
@@ -52,6 +53,7 @@ export default class DailyReportsController {
       role: context.role,
       reportDate: today,
       quickEvents,
+      healthDataEnabled: features.healthData,
       report: report
         ? {
             mood: report.mood,
@@ -59,7 +61,7 @@ export default class DailyReportsController {
             meals: normalizeItems(report.meals),
             diapers: normalizeItems(report.diapers),
             activities: normalizeItems(report.activities),
-            temperature: report.temperature,
+            ...(features.healthData ? { temperature: report.temperature } : {}),
             noteHtml: report.note_html,
             status: report.status,
           }
@@ -107,13 +109,14 @@ export default class DailyReportsController {
       role: 'parent',
       reportDate: params.date,
       quickEvents,
+      healthDataEnabled: features.healthData,
       report: {
         mood: report.mood,
         naps: normalizeItems(report.naps),
         meals: normalizeItems(report.meals),
         diapers: normalizeItems(report.diapers),
         activities: normalizeItems(report.activities),
-        temperature: report.temperature,
+        ...(features.healthData ? { temperature: report.temperature } : {}),
         noteHtml: report.note_html,
         status: report.status,
       },
@@ -155,7 +158,10 @@ export default class DailyReportsController {
       diapers: JSON.stringify(normalizeItems(body.diapers)),
       activities: JSON.stringify(normalizeItems(body.activities)),
       temperature:
-        Number.isFinite(parsedTemperature) && parsedTemperature >= 34 && parsedTemperature <= 43
+        features.healthData &&
+        Number.isFinite(parsedTemperature) &&
+        parsedTemperature >= 34 &&
+        parsedTemperature <= 43
           ? parsedTemperature
           : null,
       note_html: cleanRichText(body.noteHtml),

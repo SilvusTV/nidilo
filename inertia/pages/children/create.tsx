@@ -3,7 +3,7 @@ import { Link } from '@adonisjs/inertia/react'
 import { ArrowLeft, ArrowRight, Baby, ShieldCheck } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
 
-export default function CreateChild() {
+export default function CreateChild({ healthDataEnabled }: { healthDataEnabled: boolean }) {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -84,15 +84,27 @@ export default function CreateChild() {
             />
           </label>
         </div>
-        <label className="profile-label">
-          Allergies déjà connues
-          <textarea
-            rows={3}
-            value={form.allergies}
-            onChange={(event) => setForm({ ...form, allergies: event.target.value })}
-            placeholder="Laissez vide si aucune information n’a encore été transmise."
-          />
-        </label>
+        {healthDataEnabled && (
+          <label className="profile-label">
+            Allergies déjà connues
+            <textarea
+              rows={3}
+              value={form.allergies}
+              onChange={(event) => setForm({ ...form, allergies: event.target.value })}
+              placeholder="Laissez vide si aucune information n’a encore été transmise."
+            />
+          </label>
+        )}
+        {!healthDataEnabled && (
+          <div className="pilot-notice" role="note">
+            <ShieldCheck />
+            <p>
+              <strong>Pilote sans données médicales</strong>
+              <br />
+              Les allergies, traitements et informations de santé restent gérés hors de Nidilo.
+            </p>
+          </div>
+        )}
         <div className="creation-next-step">
           <ShieldCheck />
           <p>

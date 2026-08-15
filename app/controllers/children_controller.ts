@@ -3,12 +3,13 @@ import db from '@adonisjs/lucid/services/db'
 import { DateTime } from 'luxon'
 import { getMamContext } from '#services/access_service'
 import NotificationService from '#services/notification_service'
+import { features } from '#config/features'
 
 export default class ChildrenController {
   async create({ auth, inertia, response }: HttpContext) {
     const context = await getMamContext(auth.getUserOrFail())
     if (!context || context.role !== 'admin') return response.forbidden()
-    return inertia.render('children/create', {})
+    return inertia.render('children/create', { healthDataEnabled: features.healthData })
   }
 
   async store({ auth, request, response, session }: HttpContext) {
@@ -49,7 +50,9 @@ export default class ChildrenController {
         last_name: lastName,
         birth_date: birthDate,
         care_started_at: parsedCareStart.isValid ? careStartedAt : null,
-        allergies: String(request.input('allergies', '')).trim().slice(0, 2_000) || null,
+        allergies: features.healthData
+          ? String(request.input('allergies', '')).trim().slice(0, 2_000) || null
+          : null,
         active: true,
         created_at: new Date(),
         updated_at: new Date(),

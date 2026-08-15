@@ -33,6 +33,17 @@ Pour exécuter l’ensemble dans Docker :
 docker compose up --build
 ```
 
+Pour le pilote en production, utiliser `compose.production.yml` et placer les valeurs de
+`.env.production.example` dans un fichier `.env` non versionné :
+
+```bash
+docker compose -f compose.production.yml up -d --build
+```
+
+Cette variante expose uniquement Caddy sur les ports 80/443. PostgreSQL, Redis, MinIO et la console
+MinIO restent accessibles seulement sur le réseau Docker interne. `HEALTH_DATA_ENABLED=false` y est
+forcé pour empêcher l’activation accidentelle des fonctions médicales pendant le pilote.
+
 ## Modèle d’accès
 
 - `super_admin` crée et suspend les MAM et invite leur premier administrateur.
@@ -71,7 +82,7 @@ Les logos suivent le préfixe `mams/{mam_uuid}/branding/`, sont convertis en Web
 
 - Une notification interne est toujours enregistrée, indépendamment des préférences personnelles.
 - L’e-mail et le SMS sont optionnels, par utilisateur et par catégorie.
-- Les heures calmes retardent les envois externes non urgents ; les alertes de santé ne sont pas différées.
+- Les heures calmes retardent les envois externes non urgents.
 - Redis porte la file avec reprise sur erreur. Les e-mails et SMS transactionnels utilisent l’API Brevo. La clé `BREVO_API_KEY` reste exclusivement côté serveur.
 - Les retours de livraison Brevo sont reçus sur `/webhooks/brevo`, protégé par le jeton Bearer `BREVO_WEBHOOK_TOKEN`.
 - Le nom d’expéditeur SMS est configurable avec `BREVO_SMS_SENDER` et vaut `NIDILO` par défaut.
@@ -85,7 +96,7 @@ Les logos suivent le préfixe `mams/{mam_uuid}/branding/`, sont convertis en Web
 4. Créer dans Brevo les webhooks transactionnels e-mail et SMS vers `https://nidilo.fr/webhooks/brevo`, avec une authentification Bearer utilisant ce même jeton.
 5. Activer au minimum les événements d’acceptation, livraison, blocage, rejet et rebond. Nidilo les rattache aux envois grâce aux identifiants et tags Brevo.
 
-Les SMS utilisent le type `transactional`, l’expéditeur `NIDILO` et restent sous 160 caractères. Ils ne contiennent ni information médicale ni détail de la fiche : seulement une invitation à consulter l’espace sécurisé.
+Les SMS utilisent le type `transactional`, l’expéditeur `NIDILO` et restent sous 160 caractères. Ils ne contiennent aucun détail de la fiche : seulement une invitation à consulter l’espace sécurisé.
 
 ## Sécurité des comptes
 
@@ -119,7 +130,7 @@ Cette valeur est une règle produit à faire valider dans la documentation jurid
 - chiffrement TLS en transit et chiffrement du stockage en production ;
 - archivage, restauration et purge automatique des dossiers enfants ; export et politiques par catégorie restent à compléter ;
 - hébergement et sous-traitants à documenter dans le registre de traitement ;
-- les champs médicaux sont des données sensibles : prévoir une analyse d’impact (AIPD), une information claire des responsables et une procédure d’incident avant mise en production.
+- les fonctions médicales sont désactivées pendant le pilote ; leur activation future exigera une validation juridique et technique dédiée (base légale, analyse de risques, information et hébergement adaptés).
 
 ## Étapes métier suivantes
 

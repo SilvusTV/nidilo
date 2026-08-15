@@ -62,6 +62,7 @@ type Props = {
   contacts: Contact[]
   authorizations: Authorization[]
   healthEntries: HealthEntry[]
+  healthDataEnabled: boolean
   permissions: {
     canEditProfile: boolean
     canManageContacts: boolean
@@ -92,6 +93,7 @@ export default function ChildProfile({
   contacts,
   authorizations,
   healthEntries,
+  healthDataEnabled,
   permissions,
 }: Props) {
   const [allergies, setAllergies] = useState(child.allergies ?? '')
@@ -153,13 +155,24 @@ export default function ChildProfile({
       </header>
       <nav className="profile-section-nav" aria-label="Rubriques du dossier">
         <a href="#essentiel">Essentiel</a>
-        <a href="#sante">Santé</a>
+        {healthDataEnabled && <a href="#sante">Santé</a>}
         <a href="#contacts">Contacts</a>
         <a href="#autorisations">Autorisations</a>
       </nav>
 
       <section id="essentiel" className="profile-section">
         <SectionTitle eyebrow="Informations stables" title="L’essentiel au quotidien" />
+        {!healthDataEnabled && (
+          <div className="pilot-notice" role="note">
+            <ShieldCheck />
+            <p>
+              <strong>Les données médicales sont désactivées pendant le pilote.</strong>
+              <br />
+              N’inscrivez aucune allergie, pathologie, ordonnance ou traitement dans les notes
+              libres. Ces informations doivent rester dans les outils habituels de l’établissement.
+            </p>
+          </div>
+        )}
         <div className="profile-grid two-columns">
           {permissions.canEditCareDates && (
             <article className="settings-card">
@@ -192,17 +205,23 @@ export default function ChildProfile({
             <CardTitle
               icon={<Utensils />}
               title="Alimentation"
-              subtitle="Allergies visibles immédiatement, puis habitudes détaillées."
+              subtitle={
+                healthDataEnabled
+                  ? 'Allergies visibles immédiatement, puis habitudes détaillées.'
+                  : 'Préférences et habitudes uniquement, sans donnée médicale.'
+              }
             />
-            <label className="profile-label">
-              Allergies connues
-              <textarea
-                value={allergies}
-                onChange={(event) => setAllergies(event.target.value)}
-                rows={2}
-                placeholder="Aucune allergie connue"
-              />
-            </label>
+            {healthDataEnabled && (
+              <label className="profile-label">
+                Allergies connues
+                <textarea
+                  value={allergies}
+                  onChange={(event) => setAllergies(event.target.value)}
+                  rows={2}
+                  placeholder="Aucune allergie connue"
+                />
+              </label>
+            )}
             <RichTextEditor
               value={dietaryNotesHtml}
               onChange={setDietary}
@@ -222,63 +241,73 @@ export default function ChildProfile({
             />
           </article>
         </div>
+        {!healthDataEnabled && (
+          <button className="primary-button compact profile-save" onClick={saveProfile}>
+            <Save /> Enregistrer le dossier
+          </button>
+        )}
       </section>
 
-      <section id="sante" className="profile-section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Accès sensible</p>
-            <h2>Santé et consignes</h2>
-          </div>
-          <span className="status-pill">
-            <ShieldCheck /> Données protégées
-          </span>
-        </div>
-        <div className="profile-grid two-columns">
-          <article className="settings-card">
-            <CardTitle
-              icon={<HeartPulse />}
-              title="Suivi médical"
-              subtitle="Les e-mails ne reprennent jamais ces informations."
-            />
-            <div className="profile-fields two-fields">
-              <label>
-                Médecin traitant
-                <input value={doctorName} onChange={(event) => setDoctorName(event.target.value)} />
-              </label>
-              <label>
-                Téléphone
-                <input
-                  type="tel"
-                  value={doctorPhone}
-                  onChange={(event) => setDoctorPhone(event.target.value)}
-                />
-              </label>
+      {healthDataEnabled && (
+        <section id="sante" className="profile-section">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Accès sensible</p>
+              <h2>Santé et consignes</h2>
             </div>
-            <RichTextEditor
-              value={medicalNotesHtml}
-              onChange={setMedicalNotes}
-              label="Informations médicales permanentes"
-            />
-          </article>
-          <article className="settings-card">
-            <CardTitle
-              icon={<AlertTriangle />}
-              title="En cas d’urgence"
-              subtitle="Consignes indispensables et personnes à prévenir."
-            />
-            <RichTextEditor
-              value={emergencyInstructionsHtml}
-              onChange={setEmergency}
-              label="Consignes d’urgence"
-            />
-          </article>
-        </div>
-        <button className="primary-button compact profile-save" onClick={saveProfile}>
-          <Save /> Enregistrer le dossier
-        </button>
-        <HealthTimeline childId={child.id} entries={healthEntries} />
-      </section>
+            <span className="status-pill">
+              <ShieldCheck /> Données protégées
+            </span>
+          </div>
+          <div className="profile-grid two-columns">
+            <article className="settings-card">
+              <CardTitle
+                icon={<HeartPulse />}
+                title="Suivi médical"
+                subtitle="Les e-mails ne reprennent jamais ces informations."
+              />
+              <div className="profile-fields two-fields">
+                <label>
+                  Médecin traitant
+                  <input
+                    value={doctorName}
+                    onChange={(event) => setDoctorName(event.target.value)}
+                  />
+                </label>
+                <label>
+                  Téléphone
+                  <input
+                    type="tel"
+                    value={doctorPhone}
+                    onChange={(event) => setDoctorPhone(event.target.value)}
+                  />
+                </label>
+              </div>
+              <RichTextEditor
+                value={medicalNotesHtml}
+                onChange={setMedicalNotes}
+                label="Informations médicales permanentes"
+              />
+            </article>
+            <article className="settings-card">
+              <CardTitle
+                icon={<AlertTriangle />}
+                title="En cas d’urgence"
+                subtitle="Consignes indispensables et personnes à prévenir."
+              />
+              <RichTextEditor
+                value={emergencyInstructionsHtml}
+                onChange={setEmergency}
+                label="Consignes d’urgence"
+              />
+            </article>
+          </div>
+          <button className="primary-button compact profile-save" onClick={saveProfile}>
+            <Save /> Enregistrer le dossier
+          </button>
+          <HealthTimeline childId={child.id} entries={healthEntries} />
+        </section>
+      )}
 
       <section id="contacts" className="profile-section">
         <SectionTitle eyebrow="Entourage" title="Contacts utiles" />
@@ -326,16 +355,18 @@ export default function ChildProfile({
       <section id="autorisations" className="profile-section">
         <SectionTitle eyebrow="Décisions parentales" title="Autorisations" />
         <div className="authorization-list">
-          {authorizationLabels.map(([kind, label]) => (
-            <AuthorizationRow
-              key={kind}
-              childId={child.id}
-              kind={kind}
-              label={label}
-              current={authorizations.find((item) => item.kind === kind)}
-              editable={permissions.canManageAuthorizations}
-            />
-          ))}
+          {authorizationLabels
+            .filter(([kind]) => healthDataEnabled || kind !== 'medication')
+            .map(([kind, label]) => (
+              <AuthorizationRow
+                key={kind}
+                childId={child.id}
+                kind={kind}
+                label={label}
+                current={authorizations.find((item) => item.kind === kind)}
+                editable={permissions.canManageAuthorizations}
+              />
+            ))}
         </div>
       </section>
     </div>

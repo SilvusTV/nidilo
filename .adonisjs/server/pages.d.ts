@@ -26,6 +26,7 @@ declare module '@adonisjs/inertia/types' {
     'guardians/index': ExtractProps<(typeof import('../../inertia/pages/guardians/index.tsx'))['default']>
     'home': ExtractProps<(typeof import('../../inertia/pages/home.tsx'))['default']>
     'invitations/accept': ExtractProps<(typeof import('../../inertia/pages/invitations/accept.tsx'))['default']>
+    'legal/index': ExtractProps<(typeof import('../../inertia/pages/legal/index.tsx'))['default']>
     'notifications/index': ExtractProps<(typeof import('../../inertia/pages/notifications/index.tsx'))['default']>
     'parents/calendar': ExtractProps<(typeof import('../../inertia/pages/parents/calendar.tsx'))['default']>
     'parents/dashboard': ExtractProps<(typeof import('../../inertia/pages/parents/dashboard.tsx'))['default']>

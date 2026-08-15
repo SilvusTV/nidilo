@@ -47,6 +47,10 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
   const isActive = (href: string) => url === href || (href !== '/dashboard' && url.startsWith(href))
   const isPortal =
     url === '/' ||
+    url === '/mentions-legales' ||
+    url === '/confidentialite' ||
+    url === '/cgu' ||
+    url === '/sous-traitants' ||
     url.startsWith('/login') ||
     url.startsWith('/invitations/') ||
     url.startsWith('/mot-de-passe') ||

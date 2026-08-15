@@ -17,7 +17,6 @@ type Child = {
   firstName: string
   lastName: string
   birthDate: string
-  allergies?: string | null
 }
 type Props = {
   mam: { id: string; name: string; assignmentMode: 'all' | 'assigned' } | null
@@ -126,7 +125,6 @@ export default function Dashboard({ mam, role, wards, stats }: Props) {
                       <p>
                         <Clock3 /> Arrivée prévue à 8h30
                       </p>
-                      {child.allergies && <span className="warning-pill">Allergie renseignée</span>}
                     </div>
                     {canWrite ? (
                       <Link href={`/enfants/${child.id}/fiche`} className="card-action">

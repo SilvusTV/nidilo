@@ -1,15 +1,18 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { getMamContext } from '#services/access_service'
+import { features } from '#config/features'
 
 export default class NotificationsController {
   async index({ auth, inertia }: HttpContext) {
     const user = auth.getUserOrFail()
     const context = await getMamContext(user)
-    const notifications = await db
+    const notificationsQuery = db
       .from('notifications')
       .where('user_id', user.id)
       .if(context, (query) => query.where('mam_id', context!.mamId))
+    if (!features.healthData) notificationsQuery.whereNot('category', 'health')
+    const notifications = await notificationsQuery
       .orderBy('created_at', 'desc')
       .limit(100)
       .select(
@@ -40,6 +43,7 @@ export default class NotificationsController {
       return inertia.render('settings/notifications', {
         preferences: null,
         contact: { email: user.email, phone: user.phone },
+        healthDataEnabled: features.healthData,
       })
     const preferences = await db
       .from('notification_preferences')
@@ -57,6 +61,7 @@ export default class NotificationsController {
           }
         : null,
       contact: { email: user.email, phone: user.phone },
+      healthDataEnabled: features.healthData,
     })
   }
 
@@ -84,9 +89,10 @@ export default class NotificationsController {
       quiet_hours_end: /^([01]\d|2[0-3]):[0-5]\d$/.test(body.quietHoursEnd ?? '')
         ? body.quietHoursEnd
         : null,
-      category_settings: JSON.stringify(
-        typeof body.categories === 'object' && body.categories ? body.categories : {}
-      ),
+      category_settings: JSON.stringify({
+        ...(typeof body.categories === 'object' && body.categories ? body.categories : {}),
+        ...(!features.healthData ? { health: false } : {}),
+      }),
       updated_at: new Date(),
     }
     await db

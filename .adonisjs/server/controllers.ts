@@ -12,6 +12,7 @@ export const controllers = {
   Dashboard: () => import('#controllers/dashboard_controller'),
   InvitationAcceptances: () => import('#controllers/invitation_acceptances_controller'),
   Invitations: () => import('#controllers/invitations_controller'),
+  Legal: () => import('#controllers/legal_controller'),
   MamMedia: () => import('#controllers/mam_media_controller'),
   MamSettings: () => import('#controllers/mam_settings_controller'),
   Mfa: () => import('#controllers/mfa_controller'),

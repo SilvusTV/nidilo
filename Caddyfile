@@ -1,0 +1,15 @@
+{$APP_DOMAIN:nidilo.fr} {
+  encode zstd gzip
+  reverse_proxy app:3333
+
+  header {
+    -Server
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  }
+
+  log {
+    output stdout
+    format json
+  }
+}
