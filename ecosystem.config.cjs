@@ -1,0 +1,30 @@
+module.exports = {
+  apps: [
+    {
+      name: 'nidilo-web',
+      cwd: '/var/www/nidilo/build',
+      script: 'bin/server.js',
+      instances: 1,
+      exec_mode: 'fork',
+      autorestart: true,
+      max_memory_restart: '500M',
+      kill_timeout: 10_000,
+      listen_timeout: 15_000,
+      time: true,
+      env: { NODE_ENV: 'production' },
+    },
+    {
+      name: 'nidilo-worker',
+      cwd: '/var/www/nidilo/build',
+      script: 'ace.js',
+      args: 'queue:work --queue=notifications,maintenance',
+      instances: 1,
+      exec_mode: 'fork',
+      autorestart: true,
+      max_memory_restart: '350M',
+      kill_timeout: 15_000,
+      time: true,
+      env: { NODE_ENV: 'production' },
+    },
+  ],
+}

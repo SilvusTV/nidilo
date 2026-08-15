@@ -44,6 +44,11 @@ Cette variante expose uniquement Caddy sur les ports 80/443. PostgreSQL, Redis, 
 MinIO restent accessibles seulement sur le réseau Docker interne. `HEALTH_DATA_ENABLED=false` y est
 forcé pour empêcher l’activation accidentelle des fonctions médicales pendant le pilote.
 
+Sur un serveur utilisant déjà Apache, `compose.infrastructure.yml` démarre uniquement PostgreSQL,
+Redis et MinIO sur l’interface locale. L’application et son worker sont gérés par PM2 via
+`ecosystem.config.cjs`, sous les noms `nidilo-web` et `nidilo-worker`. Le VirtualHost de référence se
+trouve dans `deploy/apache/nidilo.conf`.
+
 ## Modèle d’accès
 
 - `super_admin` crée et suspend les MAM et invite leur premier administrateur.
