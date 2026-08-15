@@ -1,0 +1,18 @@
+{
+  "name": "Nidilo",
+  "short_name": "Nidilo",
+  "description": "Le cahier de transmission numérique pensé pour les MAM.",
+  "lang": "fr-FR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f5ee",
+  "theme_color": "#224833",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

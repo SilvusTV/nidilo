@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /super-admin/
+Disallow: /enfants/
+Disallow: /personnel
+Disallow: /saisie-rapide
+Disallow: /notifications
+Disallow: /parametres/
+Disallow: /invitations/
+Disallow: /webhooks/
+
+Sitemap: https://nidilo.fr/sitemap.xml

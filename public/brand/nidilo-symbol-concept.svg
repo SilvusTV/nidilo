@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Symbole Nidilo</title>
+  <desc id="desc">Trois courbes protectrices entourent un point représentant l’enfant.</desc>
+  <rect width="256" height="256" rx="58" fill="#f7f7f2"/>
+  <g transform="translate(25 27)" fill="none" stroke-linecap="round" stroke-width="23">
+    <path d="M31 113C27 69 55 32 99 24" stroke="#2f5a46"/>
+    <path d="M123 32C161 47 177 84 166 121" stroke="#85a18a"/>
+    <path d="M155 141C125 174 75 176 41 146" stroke="#63826a"/>
+  </g>
+  <circle cx="128" cy="132" r="20" fill="#e7a678"/>
+</svg>

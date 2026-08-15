@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Nidilo</title>
+  <desc id="desc">Logo Nidilo, Le quotidien des enfants, bien entouré.</desc>
+  <rect width="1200" height="360" rx="44" fill="#f7f7f2"/>
+
+  <g transform="translate(76 63)" fill="none" stroke-linecap="round" stroke-width="25">
+    <path d="M37 128C32 77 64 34 116 25" stroke="#2f5a46"/>
+    <path d="M143 34C188 51 207 94 194 138" stroke="#85a18a"/>
+    <path d="M181 163C145 201 86 204 47 169" stroke="#63826a"/>
+  </g>
+  <circle cx="198" cy="185" r="22" fill="#e7a678"/>
+
+  <text x="340" y="184" font-family="'DM Sans', 'Avenir Next', Arial, sans-serif" font-size="104" letter-spacing="-5">
+    <tspan fill="#2f5a46" font-weight="700">Nid</tspan><tspan fill="#789780" font-weight="600">ilo</tspan>
+  </text>
+  <text x="347" y="234" fill="#65756e" font-family="'DM Sans', 'Avenir Next', Arial, sans-serif" font-size="27" font-weight="500" letter-spacing="0.15">
+    Le quotidien des enfants, bien entouré.
+  </text>
+</svg>

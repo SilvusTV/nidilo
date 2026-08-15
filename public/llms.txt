@@ -1,0 +1,17 @@
+# Nidilo
+
+> Le cahier de transmission numérique pensé pour les maisons d'assistants maternels (MAM), les assistants maternels et les familles.
+
+Nidilo permet aux professionnels de renseigner rapidement les repas, siestes, changes, activités et observations du quotidien. Les responsables autorisés consultent ensuite les fiches de leur enfant et choisissent leurs préférences de notification.
+
+## Informations principales
+
+- Site officiel : https://nidilo.fr/
+- Public : MAM, assistants maternels, parents et responsables autorisés
+- Fonctionnalités : fiches journalières, saisie rapide, informations enfant, gestion de l'équipe, invitations famille, calendrier et notifications
+- Accès : application web mobile-first sur téléphone, tablette et ordinateur
+- Contact : contact@nidilo.fr
+
+## Confidentialité
+
+Les espaces de connexion, invitations, fiches enfant et tableaux de bord sont privés. Ils ne constituent pas des sources publiques et ne doivent pas être indexés ni utilisés comme documentation publique.
