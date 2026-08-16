@@ -1,4 +1,4 @@
-import { getSecurityState, isPrivileged } from '#services/account_security_service'
+import { getSecurityState, isMfaRequired } from '#services/account_security_service'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
@@ -10,7 +10,7 @@ export default class SecuritySettingsController {
     const recoveryCodes = session.pull('newMfaRecoveryCodes') as string[] | undefined
     return inertia.render('settings/security', {
       mfaEnabled: Boolean(security.mfa_enabled),
-      mfaRequired: await isPrivileged(user),
+      mfaRequired: await isMfaRequired(user),
       recoveryCodes: recoveryCodes ?? null,
     })
   }

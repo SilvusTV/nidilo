@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 import type { Authenticators } from '@adonisjs/auth/types'
 import app from '@adonisjs/core/services/app'
-import { getSecurityState, isPrivileged } from '#services/account_security_service'
+import { getSecurityState, isMfaRequired } from '#services/account_security_service'
 
 /**
  * Auth middleware is used authenticate HTTP requests and deny
@@ -35,7 +35,7 @@ export default class AuthMiddleware {
     if (
       !app.inTest &&
       !security.mfa_enabled &&
-      (await isPrivileged(user)) &&
+      (await isMfaRequired(user)) &&
       !ctx.request.url().startsWith('/securite/mfa/configurer') &&
       ctx.request.url() !== '/logout'
     ) {

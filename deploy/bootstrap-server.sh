@@ -52,6 +52,7 @@ set_env S3_ENDPOINT http://127.0.0.1:9010
 set_env S3_REGION eu-west-3
 set_env S3_BUCKET nidilo-media
 set_env HEALTH_DATA_ENABLED false
+set_env MFA_REQUIRED_FOR_ADMINS false
 
 ensure_secret APP_KEY 16
 ensure_secret DB_PASSWORD 32

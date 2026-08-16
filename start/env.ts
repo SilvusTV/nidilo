@@ -51,6 +51,7 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   // Pilot feature flags
   HEALTH_DATA_ENABLED: Env.schema.boolean.optional(),
+  MFA_REQUIRED_FOR_ADMINS: Env.schema.boolean.optional(),
 
   // Public legal identity (mandatory before opening the pilot)
   LEGAL_PUBLISHER_NAME: Env.schema.string.optional(),

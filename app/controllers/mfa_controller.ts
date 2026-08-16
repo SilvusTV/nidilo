@@ -1,4 +1,4 @@
-import { getSecurityState, isPrivileged } from '#services/account_security_service'
+import { getSecurityState, isMfaRequired } from '#services/account_security_service'
 import RateLimitService from '#services/rate_limit_service'
 import {
   createRecoveryCodes,
@@ -92,7 +92,7 @@ export default class MfaController {
     return inertia.render('auth/mfa_setup', {
       secret,
       uri,
-      required: await isPrivileged(user),
+      required: await isMfaRequired(user),
     })
   }
 
