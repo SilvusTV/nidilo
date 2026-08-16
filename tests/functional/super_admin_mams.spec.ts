@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import db from '@adonisjs/lucid/services/db'
 import User from '#models/user'
+import { createHash } from 'node:crypto'
 
 test.group('Super admin MAM management', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
@@ -38,5 +39,103 @@ test.group('Super admin MAM management', (group) => {
     suspended.assertStatus(200)
     const updated = await db.from('mams').where('id', mam.id).firstOrFail()
     assert.isFalse(updated.active)
+  })
+
+  test('a super admin resends an unaccepted MAM invitation with a fresh token', async ({
+    client,
+    assert,
+  }) => {
+    const superAdmin = await User.findByOrFail('email', 'superadmin@nidilo.test')
+    const mamId = crypto.randomUUID()
+    const invitationId = crypto.randomUUID()
+    await db.table('mams').insert({
+      id: mamId,
+      name: 'MAM invitation à renvoyer',
+      slug: `mam-resend-${crypto.randomUUID()}`,
+      email: 'resend@example.test',
+      timezone: 'Europe/Paris',
+      assignment_mode: 'all',
+      settings: JSON.stringify({}),
+      active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+    await db.table('invitations').insert({
+      id: invitationId,
+      mam_id: mamId,
+      invited_by: superAdmin.id,
+      email: 'resend@example.test',
+      role: 'mam_admin',
+      token_hash: createHash('sha256').update('old-token').digest('hex'),
+      expires_at: new Date(Date.now() - 86_400_000),
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+    const before = await db.from('invitations').where('id', invitationId).firstOrFail()
+
+    const resent = await client
+      .post(`/super-admin/invitations/${invitationId}/resend`)
+      .loginAs(superAdmin)
+      .withCsrfToken()
+    resent.assertStatus(200)
+
+    const after = await db.from('invitations').where('id', invitationId).firstOrFail()
+    assert.notEqual(after.token_hash, before.token_hash)
+    assert.isAbove(new Date(after.expires_at).getTime(), Date.now() + 6 * 86_400_000)
+  })
+
+  test('a super admin deletes an empty MAM but cannot delete one containing a child', async ({
+    client,
+    assert,
+  }) => {
+    const superAdmin = await User.findByOrFail('email', 'superadmin@nidilo.test')
+    const emptyMamId = crypto.randomUUID()
+    const populatedMamId = crypto.randomUUID()
+    const mamDefaults = {
+      timezone: 'Europe/Paris',
+      assignment_mode: 'all',
+      settings: JSON.stringify({}),
+      active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+    await db.table('mams').multiInsert([
+      {
+        ...mamDefaults,
+        id: emptyMamId,
+        name: 'MAM vide à supprimer',
+        slug: `mam-empty-${crypto.randomUUID()}`,
+      },
+      {
+        ...mamDefaults,
+        id: populatedMamId,
+        name: 'MAM avec enfant',
+        slug: `mam-populated-${crypto.randomUUID()}`,
+      },
+    ])
+    await db.table('children').insert({
+      id: crypto.randomUUID(),
+      mam_id: populatedMamId,
+      first_name: 'Camille',
+      last_name: 'Test',
+      birth_date: '2024-01-01',
+      active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+
+    const deleted = await client
+      .delete(`/super-admin/mams/${emptyMamId}`)
+      .loginAs(superAdmin)
+      .withCsrfToken()
+    deleted.assertStatus(200)
+    assert.notExists(await db.from('mams').where('id', emptyMamId).first())
+
+    const refused = await client
+      .delete(`/super-admin/mams/${populatedMamId}`)
+      .loginAs(superAdmin)
+      .withCsrfToken()
+    refused.assertStatus(200)
+    assert.exists(await db.from('mams').where('id', populatedMamId).first())
   })
 })

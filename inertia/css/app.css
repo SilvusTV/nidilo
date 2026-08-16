@@ -2139,6 +2139,15 @@ input:focus-visible,
   background: var(--peach-soft);
   color: var(--ink);
 }
+.mam-management-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+.mam-management-actions .danger-button {
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--line));
+}
 .parent-children-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

@@ -1,5 +1,5 @@
 import { Head, router } from '@inertiajs/react'
-import { Building2, Mail, Plus, Power, ShieldCheck, UsersRound } from 'lucide-react'
+import { Building2, Mail, Plus, Power, Send, ShieldCheck, Trash2, UsersRound } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
 
 type Mam = {
@@ -13,7 +13,7 @@ type Mam = {
   staffCount: string | number
   adminsCount: string | number
 }
-type Pending = { id: string; email: string; mamId: string }
+type Pending = { id: string; email: string; mamId: string; expiresAt: string }
 
 export default function SuperAdminMams({ mams, pending }: { mams: Mam[]; pending: Pending[] }) {
   const [name, setName] = useState('')
@@ -116,7 +116,10 @@ export default function SuperAdminMams({ mams, pending }: { mams: Mam[]; pending
                       </span>
                       {invitation && (
                         <span className="pending-pill">
-                          <Mail /> Invitation en attente
+                          <Mail />
+                          {new Date(invitation.expiresAt) > new Date()
+                            ? 'Invitation en attente'
+                            : 'Invitation expirée'}
                         </span>
                       )}
                     </div>
@@ -124,19 +127,52 @@ export default function SuperAdminMams({ mams, pending }: { mams: Mam[]; pending
                   <span className={mam.active ? 'status-pill published' : 'status-pill'}>
                     {mam.active ? 'Active' : 'Suspendue'}
                   </span>
-                  <button
-                    className="secondary-button compact"
-                    onClick={() =>
-                      router.patch(
-                        `/super-admin/mams/${mam.id}`,
-                        { active: !mam.active },
-                        { preserveScroll: true }
-                      )
-                    }
-                  >
-                    <Power />
-                    {mam.active ? 'Suspendre' : 'Réactiver'}
-                  </button>
+                  <div className="mam-management-actions">
+                    {invitation && (
+                      <button
+                        className="secondary-button compact"
+                        onClick={() =>
+                          router.post(
+                            `/super-admin/invitations/${invitation.id}/resend`,
+                            {},
+                            { preserveScroll: true }
+                          )
+                        }
+                      >
+                        <Send /> Renvoyer l’invitation
+                      </button>
+                    )}
+                    <button
+                      className="secondary-button compact"
+                      onClick={() =>
+                        router.patch(
+                          `/super-admin/mams/${mam.id}`,
+                          { active: !mam.active },
+                          { preserveScroll: true }
+                        )
+                      }
+                    >
+                      <Power />
+                      {mam.active ? 'Suspendre' : 'Réactiver'}
+                    </button>
+                    {Number(mam.childrenCount) === 0 && Number(mam.staffCount) === 0 && (
+                      <button
+                        className="secondary-button compact danger-button"
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              `Supprimer définitivement « ${mam.name} » ? Cette action est irréversible.`
+                            )
+                          )
+                            router.delete(`/super-admin/mams/${mam.id}`, {
+                              preserveScroll: true,
+                            })
+                        }}
+                      >
+                        <Trash2 /> Supprimer
+                      </button>
+                    )}
+                  </div>
                 </article>
               )
             })}

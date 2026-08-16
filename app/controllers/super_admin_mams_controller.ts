@@ -46,8 +46,12 @@ export default class SuperAdminMamsController {
       .join('mams', 'mams.id', 'invitations.mam_id')
       .where('invitations.role', 'mam_admin')
       .whereNull('invitations.accepted_at')
-      .where('invitations.expires_at', '>', new Date())
-      .select('invitations.id', 'invitations.email', 'mams.id as mamId')
+      .select(
+        'invitations.id',
+        'invitations.email',
+        'invitations.expires_at as expiresAt',
+        'mams.id as mamId'
+      )
     return inertia.render('super-admin/mams', { mams, pending })
   }
 
@@ -147,6 +151,107 @@ export default class SuperAdminMamsController {
       created_at: new Date(),
     })
     session.flash('success', active ? 'MAM réactivée.' : 'MAM suspendue.')
+    return response.redirect().back()
+  }
+
+  async resendInvitation({ auth, params, response, session }: HttpContext) {
+    const user = auth.getUserOrFail()
+    if (!user.isSuperAdmin) return response.forbidden()
+
+    const invitation = await db
+      .from('invitations')
+      .join('mams', 'mams.id', 'invitations.mam_id')
+      .where('invitations.id', params.invitationId)
+      .where('invitations.role', 'mam_admin')
+      .whereNull('invitations.accepted_at')
+      .select('invitations.id', 'invitations.email', 'invitations.mam_id as mamId', 'mams.name')
+      .first()
+    if (!invitation) return response.notFound()
+
+    const inviteLimit = await new RateLimitService().hit('mam-invitation-resend', user.id, {
+      limit: 20,
+      windowSeconds: 60 * 60,
+    })
+    if (!inviteLimit.allowed) {
+      response.header('Retry-After', String(Math.max(inviteLimit.retryAfter, 60)))
+      session.flash('error', 'Limite de renvois atteinte. Réessayez dans une heure.')
+      return response.redirect().back()
+    }
+
+    const token = randomBytes(32).toString('base64url')
+    await db.transaction(async (trx) => {
+      await trx
+        .from('invitations')
+        .where('id', invitation.id)
+        .update({
+          invited_by: user.id,
+          token_hash: createHash('sha256').update(token).digest('hex'),
+          expires_at: new Date(Date.now() + 7 * 86_400_000),
+          updated_at: new Date(),
+        })
+      await trx.table('audit_logs').insert({
+        mam_id: invitation.mamId,
+        actor_id: user.id,
+        action: 'mam.invitation_resent',
+        subject_type: 'invitation',
+        subject_id: invitation.id,
+        metadata: JSON.stringify({ email: invitation.email }),
+        created_at: new Date(),
+      })
+    })
+
+    const notifications = new NotificationService()
+    const [notificationId] = await notifications.notifyUsers({
+      mamId: invitation.mamId,
+      recipientIds: [user.id],
+      actorId: user.id,
+      category: 'system',
+      type: 'mam.invitation_resent',
+      title: `Invitation renvoyée pour ${invitation.name}`,
+      body: `Une nouvelle invitation administrateur a été envoyée à ${invitation.email}.`,
+      actionUrl: '/super-admin/mams',
+    })
+    await notifications.queueExternalDelivery(notificationId, 'email', invitation.email, {
+      title: `Administrez ${invitation.name} sur Nidilo`,
+      body: 'Acceptez cette invitation pour configurer votre espace. Ce nouveau lien est valable 7 jours.',
+      actionUrl: new URL(`/invitations/${token}`, appUrl).toString(),
+    })
+    session.flash('success', `Invitation renvoyée à ${invitation.email}.`)
+    return response.redirect().back()
+  }
+
+  async destroy({ auth, params, response, session }: HttpContext) {
+    const user = auth.getUserOrFail()
+    if (!user.isSuperAdmin) return response.forbidden()
+
+    const mam = await db.from('mams').where('id', params.id).select('id', 'name').first()
+    if (!mam) return response.notFound()
+
+    const [child, membership] = await Promise.all([
+      db.from('children').where('mam_id', mam.id).select('id').first(),
+      db.from('memberships').where('mam_id', mam.id).select('id').first(),
+    ])
+    if (child || membership) {
+      session.flash(
+        'error',
+        'Cette MAM contient déjà des enfants ou des membres. Suspendez-la au lieu de la supprimer.'
+      )
+      return response.redirect().back()
+    }
+
+    await db.transaction(async (trx) => {
+      await trx.table('audit_logs').insert({
+        mam_id: mam.id,
+        actor_id: user.id,
+        action: 'mam.deleted',
+        subject_type: 'mam',
+        subject_id: mam.id,
+        metadata: JSON.stringify({ name: mam.name }),
+        created_at: new Date(),
+      })
+      await trx.from('mams').where('id', mam.id).delete()
+    })
+    session.flash('success', `${mam.name} a été supprimée.`)
     return response.redirect().back()
   }
 }

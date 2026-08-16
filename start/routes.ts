@@ -73,6 +73,15 @@ router
     router
       .patch('/super-admin/mams/:id', [SuperAdminMamsController, 'update'])
       .as('super.mams.update')
+    router
+      .post('/super-admin/invitations/:invitationId/resend', [
+        SuperAdminMamsController,
+        'resendInvitation',
+      ])
+      .as('super.mams.invitations.resend')
+    router
+      .delete('/super-admin/mams/:id', [SuperAdminMamsController, 'destroy'])
+      .as('super.mams.destroy')
     router.get('/media/logo-mam', [MamMediaController, 'logo']).as('mam.logo')
     router.get('/personnel', [StaffController, 'index']).as('staff.index')
     router.post('/personnel/invitations', [StaffController, 'invite']).as('staff.invite')
