@@ -103,6 +103,23 @@ const structuredData = {
   ],
 }
 
+function returnToContactForm(errors: Record<string, string>) {
+  window.history.replaceState(
+    null,
+    '',
+    `${window.location.pathname}${window.location.search}#contact`
+  )
+
+  window.requestAnimationFrame(() => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+    const firstInvalidField = Object.keys(errors)
+      .map((name) => document.querySelector<HTMLElement>(`#contact [name="${name}"]`))
+      .find((field) => field !== null)
+    firstInvalidField?.focus({ preventScroll: true })
+  })
+}
+
 export default function Home({ cspNonce, csrfToken }: { cspNonce: string; csrfToken: string }) {
   return (
     <div className="marketing-page">
@@ -582,7 +599,12 @@ export default function Home({ cspNonce, csrfToken }: { cspNonce: string; csrfTo
               <Mail /> contact@nidilo.fr
             </a>
           </div>
-          <Form route="contact.store" className="marketing-contact-form">
+          <Form
+            route="contact.store"
+            className="marketing-contact-form"
+            resetOnSuccess
+            onError={returnToContactForm}
+          >
             {({ errors, processing, wasSuccessful }) => (
               <>
                 <input type="hidden" name="_csrf" value={csrfToken} />
