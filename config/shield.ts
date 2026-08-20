@@ -20,9 +20,9 @@ const shieldConfig = defineConfig({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", '@nonce', ...developmentScripts],
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       imgSrc: ["'self'", 'data:', 'blob:'],
-      fontSrc: ["'self'", 'data:'],
+      fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
       connectSrc: ["'self'", 'ws:', 'wss:'],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],

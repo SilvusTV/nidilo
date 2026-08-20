@@ -20,4 +20,13 @@ cp .env build/.env
   node ace migration:run --force
 )
 
+if [[ ! -f build/public/assets/.vite/manifest.json ]]; then
+  echo "Erreur : manifeste Vite absent après le build." >&2
+  exit 1
+fi
+
+# Adonis keeps the Vite manifest in memory. Reloading after the build prevents
+# HTML responses from referencing hashed assets removed by the new build.
+pm2 startOrReload ecosystem.config.cjs --update-env
+
 echo "Mise en production terminée."
