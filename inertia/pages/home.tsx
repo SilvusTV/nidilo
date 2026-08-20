@@ -103,7 +103,7 @@ const structuredData = {
   ],
 }
 
-export default function Home({ cspNonce }: { cspNonce: string }) {
+export default function Home({ cspNonce, csrfToken }: { cspNonce: string; csrfToken: string }) {
   return (
     <div className="marketing-page">
       <Head>
@@ -585,6 +585,7 @@ export default function Home({ cspNonce }: { cspNonce: string }) {
           <Form route="contact.store" className="marketing-contact-form">
             {({ errors, processing, wasSuccessful }) => (
               <>
+                <input type="hidden" name="_csrf" value={csrfToken} />
                 <div className="contact-form-heading">
                   <p>Demander une présentation</p>
                   <span>Quelques informations suffisent.</span>

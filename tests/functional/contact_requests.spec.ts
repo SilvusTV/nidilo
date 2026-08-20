@@ -5,6 +5,13 @@ import db from '@adonisjs/lucid/services/db'
 test.group('Public contact requests', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
 
+  test('shares a CSRF token with the public contact form', async ({ client, assert }) => {
+    const response = await client.get('/')
+
+    response.assertStatus(200)
+    assert.include(response.text(), 'csrfToken')
+  })
+
   test('stores a valid request without exposing a sequential identifier', async ({
     client,
     assert,

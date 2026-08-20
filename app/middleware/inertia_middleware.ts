@@ -47,6 +47,7 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
       : null
     return {
       cspNonce: ctx.inertia.always(ctx.response.nonce),
+      csrfToken: ctx.inertia.always(ctx.request.csrfToken),
       errors: ctx.inertia.always(this.getValidationErrors(ctx)),
       user: ctx.inertia.always(auth?.user ? UserTransformer.transform(auth.user) : undefined),
       mamBrand: ctx.inertia.always(mam),
