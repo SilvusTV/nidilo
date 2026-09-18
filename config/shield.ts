@@ -2,6 +2,7 @@ import { defineConfig } from '@adonisjs/shield'
 import app from '@adonisjs/core/services/app'
 
 const developmentScripts = app.inProduction ? [] : ['http://localhost:*', 'http://127.0.0.1:*']
+const posthogHosts = ['https://eu.i.posthog.com', 'https://eu-assets.i.posthog.com']
 
 const shieldConfig = defineConfig({
   /**
@@ -19,11 +20,12 @@ const shieldConfig = defineConfig({
      */
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", '@nonce', ...developmentScripts],
+      scriptSrc: ["'self'", '@nonce', ...developmentScripts, ...posthogHosts],
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       imgSrc: ["'self'", 'data:', 'blob:'],
       fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
-      connectSrc: ["'self'", 'ws:', 'wss:'],
+      connectSrc: ["'self'", 'ws:', 'wss:', ...posthogHosts],
+      workerSrc: ["'self'", 'blob:'],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
       formAction: ["'self'"],

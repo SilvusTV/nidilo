@@ -11,6 +11,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import encryption from '@adonisjs/core/services/encryption'
 import db from '@adonisjs/lucid/services/db'
 import { DateTime } from 'luxon'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 export default class MfaController {
   async challenge({ inertia, response, session }: HttpContext) {
@@ -73,6 +74,7 @@ export default class MfaController {
     session.put('securityVersion', Number(security.security_version))
     user.lastLoginAt = DateTime.now()
     await user.save()
+    flashProductAnalytics(session, 'login_succeeded', { authentication_method: 'mfa' })
     return response.redirect(
       redirectTo.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : '/dashboard'
     )

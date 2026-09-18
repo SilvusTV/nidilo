@@ -4,6 +4,9 @@ import UserTransformer from '#transformers/user_transformer'
 import BaseInertiaMiddleware from '@adonisjs/inertia/inertia_middleware'
 import db from '@adonisjs/lucid/services/db'
 import { getMamContext } from '#services/access_service'
+import type { ProductAnalyticsEvent } from '#services/product_analytics_service'
+
+type OptionalProductAnalyticsEvent = ProductAnalyticsEvent | undefined
 
 export default class InertiaMiddleware extends BaseInertiaMiddleware {
   async share(ctx: HttpContext) {
@@ -72,6 +75,7 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
     return {
       error: session?.flashMessages.get('error') as string | undefined,
       success: session?.flashMessages.get('success') as string | undefined,
+      analyticsEvent: session?.flashMessages.get('analyticsEvent') as OptionalProductAnalyticsEvent,
     }
   }
 

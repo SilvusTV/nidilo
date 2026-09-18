@@ -3,6 +3,7 @@ import { toast, Toaster } from 'sonner'
 import { usePage } from '@inertiajs/react'
 import { type ReactElement, useEffect, useState } from 'react'
 import { Form, Link } from '@adonisjs/inertia/react'
+import AnalyticsConsentManager from '~/components/analytics_consent'
 import {
   Bell,
   Home,
@@ -43,6 +44,17 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
   const mamRole = children.props.mamRole
   const isSuperAdmin = user?.globalRole === 'super_admin'
   const isProfessional = mamRole === 'admin' || mamRole === 'assistant'
+  const actorCategory = isSuperAdmin
+    ? 'super_admin'
+    : mamRole === 'admin'
+      ? 'professional_admin'
+      : mamRole === 'assistant'
+        ? 'professional_assistant'
+        : mamRole === 'parent'
+          ? 'guardian'
+          : user
+            ? 'member'
+            : null
   const settingsHref = mamRole === 'admin' ? '/parametres/mam' : '/parametres/notifications'
   const isActive = (href: string) => url === href || (href !== '/dashboard' && url.startsWith(href))
   const isPortal =
@@ -86,7 +98,14 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
         >
           {dark ? <Sun /> : <Moon />}
         </button>
-        <div className="portal-main">{children}</div>
+        <div className="portal-main" data-analytics-private={url === '/' ? undefined : 'true'}>
+          {children}
+        </div>
+        <AnalyticsConsentManager
+          url={url}
+          actorCategory={actorCategory}
+          confirmedEvent={flash.analyticsEvent}
+        />
         <Toaster position="top-center" richColors />
       </>
     )
@@ -183,7 +202,7 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
           </p>
         </div>
       </aside>
-      <main id="contenu" className="app-main">
+      <main id="contenu" className="app-main" data-analytics-private="true">
         {children}
       </main>
       <nav className="bottom-nav" aria-label="Navigation mobile">
@@ -226,6 +245,11 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
           </Link>
         )}
       </nav>
+      <AnalyticsConsentManager
+        url={url}
+        actorCategory={actorCategory}
+        confirmedEvent={flash.analyticsEvent}
+      />
       <Toaster position="top-center" richColors />
     </div>
   )

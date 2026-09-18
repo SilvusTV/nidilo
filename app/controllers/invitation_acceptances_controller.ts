@@ -6,6 +6,7 @@ import NotificationService from '#services/notification_service'
 import { createHash } from 'node:crypto'
 import RateLimitService from '#services/rate_limit_service'
 import { getSecurityState } from '#services/account_security_service'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 const digest = (token: string) => createHash('sha256').update(token).digest('hex')
 
@@ -44,6 +45,7 @@ export default class InvitationAcceptancesController {
     }
 
     let user = auth.user ?? (await User.findBy('email', invitation.email))
+    const accountCreated = !user
     if (auth.user && auth.user.email.toLowerCase() !== invitation.email.toLowerCase()) {
       session.flash('error', `Cette invitation est destinée à ${invitation.email}.`)
       return response.redirect().back()
@@ -165,6 +167,11 @@ export default class InvitationAcceptancesController {
         ? `Bienvenue dans l’espace de ${invitation.child_first_name}.`
         : `Bienvenue dans l’équipe de ${invitation.mam_name}.`
     )
+    flashProductAnalytics(session, 'invitation_accepted', {
+      invitation_category: invitation.child_id ? 'guardian' : 'staff',
+      account_created: accountCreated,
+      onboarding_admin: invitation.role === 'mam_admin',
+    })
     return response.redirect('/dashboard')
   }
 

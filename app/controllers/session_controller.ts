@@ -5,6 +5,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { DateTime } from 'luxon'
 import { randomInt } from 'node:crypto'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 const loginLimit = { limit: 8, windowSeconds: 15 * 60, blockSeconds: 15 * 60 }
 
@@ -121,6 +122,9 @@ export default class SessionController {
     ctx.session.put('securityVersion', securityVersion)
     user.lastLoginAt = DateTime.now()
     await user.save()
+    flashProductAnalytics(ctx.session, 'login_succeeded', {
+      authentication_method: 'password',
+    })
     ctx.response.redirect('/dashboard')
   }
 }

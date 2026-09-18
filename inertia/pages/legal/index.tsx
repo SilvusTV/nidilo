@@ -140,6 +140,11 @@ function Privacy({ publisher }: { publisher: Identity }) {
             données techniques de sécurité : événements d’accès, compteurs anti-abus et journaux
             d’audit ;
           </li>
+          <li>
+            avec consentement, données de mesure d’audience et d’usage : page normalisée, fonction
+            utilisée, interaction, performance, erreur technique et environnement local ou
+            production ;
+          </li>
           <li>données du formulaire de contact.</li>
         </ul>
         <p>
@@ -163,6 +168,10 @@ function Privacy({ publisher }: { publisher: Identity }) {
             répondre ;
           </li>
           <li>
+            mesurer l’audience, comprendre les parcours, améliorer l’ergonomie et diagnostiquer les
+            erreurs : consentement, retirable à tout moment ;
+          </li>
+          <li>
             respecter une obligation légale et établir la preuve d’une opération lorsque cela est
             nécessaire.
           </li>
@@ -179,14 +188,20 @@ function Privacy({ publisher }: { publisher: Identity }) {
           peuvent y accéder. Les habilitations sont vérifiées côté serveur. Les données ne sont ni
           revendues ni utilisées pour entraîner un modèle publicitaire.
         </p>
+        <p>
+          Les mesures d’usage consenties sont traitées dans PostHog sans nom, adresse e-mail,
+          identifiant de compte, identifiant de MAM, contenu saisi ni donnée enfant. Un identifiant
+          technique propre au navigateur permet uniquement de relier les événements d’une même
+          navigation dans le temps.
+        </p>
       </Section>
       <Section title="Sous-traitants et localisation">
         <p>
           Nidilo utilise des prestataires techniques pour l’hébergement du serveur, l’envoi des
-          e-mails et SMS, et éventuellement les sauvegardes. La liste tenue à jour figure sur la
-          page <a href="/sous-traitants">Sous-traitants de Nidilo</a>. Les conditions exactes de
-          localisation et les garanties du prestataire d’hébergement doivent être renseignées avant
-          le pilote.
+          e-mails et SMS, la mesure d’usage consentie et éventuellement les sauvegardes. La liste
+          tenue à jour figure sur la page <a href="/sous-traitants">Sous-traitants de Nidilo</a>.
+          Les conditions exactes de localisation et les garanties du prestataire d’hébergement
+          doivent être renseignées avant le pilote.
         </p>
       </Section>
       <Section title="Durées">
@@ -200,6 +215,9 @@ function Privacy({ publisher }: { publisher: Identity }) {
             anonymisation selon les obligations applicables ;
           </li>
           <li>notifications et journaux d’audit : 12 mois ;</li>
+          <li>événements de mesure d’usage consentie : 12 mois au maximum ;</li>
+          <li>rejeux de session protégés : 30 jours au maximum ;</li>
+          <li>preuve locale du choix relatif aux traceurs : 6 mois ;</li>
           <li>demandes de contact : 12 mois ;</li>
           <li>
             jetons de sécurité et compteurs anti-abus : quelques minutes à 48 heures selon leur
@@ -231,10 +249,22 @@ function Privacy({ publisher }: { publisher: Identity }) {
       </Section>
       <Section title="Cookies et stockage local">
         <p>
-          Nidilo utilise uniquement les cookies indispensables à la session, à la protection CSRF et
-          à la sécurité de l’authentification. Le choix du thème clair ou sombre est conservé
-          localement dans le navigateur. Aucun traceur publicitaire ou de mesure d’audience n’est
-          activé pendant le pilote ; aucun bandeau de consentement n’est donc affiché.
+          Nidilo utilise sans consentement les cookies strictement indispensables à la session, à la
+          protection CSRF et à la sécurité de l’authentification. Le thème et le choix relatif aux
+          traceurs sont conservés localement dans le navigateur.
+        </p>
+        <p>
+          PostHog n’est activé qu’après accord explicite. Deux finalités peuvent être choisies
+          séparément : la mesure d’audience et d’usage, puis le rejeu de session protégé. Les
+          chemins contenant un identifiant ou une date sont normalisés, les paramètres d’URL sont
+          supprimés, tous les champs et textes sont masqués, et les zones privées de l’application
+          sont exclues des replays. Le refus est aussi accessible que l’acceptation et n’empêche
+          aucune fonction.
+        </p>
+        <p>
+          Le choix peut être retiré ou modifié à tout moment avec le bouton « Cookies » présent sur
+          chaque page. Il est redemandé après six mois. Nidilo n’utilise aucun traceur publicitaire
+          et ne réalise aucun suivi entre plusieurs sites.
         </p>
       </Section>
       <Section title="Sécurité et incidents">
@@ -338,6 +368,14 @@ function Subprocessors() {
             <span>E-mails et SMS transactionnels</span>
             <span>
               Prestataire français ; conditions et sous-traitants à vérifier dans le compte Brevo
+            </span>
+          </div>
+          <div role="row">
+            <span>PostHog Inc.</span>
+            <span>Mesure d’audience, analyse produit et rejeu de session avec consentement</span>
+            <span>
+              Cloud UE sélectionné (Francfort) ; conditions contractuelles et sous-traitants publiés
+              par PostHog
             </span>
           </div>
           <div role="row">

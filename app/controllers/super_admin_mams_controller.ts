@@ -4,6 +4,7 @@ import { createHash, randomBytes } from 'node:crypto'
 import NotificationService from '#services/notification_service'
 import { appUrl } from '#config/app'
 import RateLimitService from '#services/rate_limit_service'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 const slugify = (value: string) =>
   value
@@ -131,6 +132,7 @@ export default class SuperAdminMamsController {
       actionUrl: new URL(`/invitations/${token}`, appUrl).toString(),
     })
     session.flash('success', 'MAM créée et invitation administrateur envoyée.')
+    flashProductAnalytics(session, 'mam_created')
     return response.redirect().back()
   }
 

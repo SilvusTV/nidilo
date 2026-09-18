@@ -5,6 +5,7 @@ import NotificationService from '#services/notification_service'
 import { cleanRichText } from '#services/rich_text_service'
 import { DateTime } from 'luxon'
 import { features } from '#config/features'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 export { cleanRichText } from '#services/rich_text_service'
 
@@ -195,6 +196,10 @@ export default class DailyReportsController {
       'success',
       body.status === 'published' ? 'Fiche publiée aux responsables.' : 'Brouillon enregistré.'
     )
+    flashProductAnalytics(session, 'daily_report_saved', {
+      report_state: body.status === 'published' ? 'published' : 'draft',
+      first_publication: body.status === 'published' && previousReport?.status !== 'published',
+    })
     return response.redirect().back()
   }
 }

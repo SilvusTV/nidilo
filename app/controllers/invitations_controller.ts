@@ -5,6 +5,7 @@ import { assertChildAccess, getMamContext } from '#services/access_service'
 import NotificationService from '#services/notification_service'
 import { appUrl } from '#config/app'
 import RateLimitService from '#services/rate_limit_service'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 export default class InvitationsController {
   async index({ auth, params, inertia, response }: HttpContext) {
@@ -122,6 +123,9 @@ export default class InvitationsController {
       actionUrl: new URL(`/invitations/${token}`, appUrl).toString(),
     })
     session.flash('success', 'Invitation envoyée. La MAM a été notifiée.')
+    flashProductAnalytics(session, 'guardian_invited', {
+      inviter_category: context.role === 'parent' ? 'guardian' : 'professional',
+    })
     return response.redirect().back()
   }
 }

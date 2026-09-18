@@ -5,6 +5,7 @@ import { getMamContext } from '#services/access_service'
 import NotificationService from '#services/notification_service'
 import { appUrl } from '#config/app'
 import RateLimitService from '#services/rate_limit_service'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 const staffRoles = new Set(['admin', 'assistant'])
 
@@ -102,6 +103,7 @@ export default class StaffController {
       actionUrl: new URL(`/invitations/${token}`, appUrl).toString(),
     })
     session.flash('success', 'Invitation professionnelle envoyée.')
+    flashProductAnalytics(session, 'staff_invited', { invited_category: role })
     return response.redirect().back()
   }
 

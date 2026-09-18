@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { getMamContext } from '#services/access_service'
 import { features } from '#config/features'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 export default class NotificationsController {
   async index({ auth, inertia }: HttpContext) {
@@ -101,6 +102,11 @@ export default class NotificationsController {
       .onConflict(['mam_id', 'user_id'])
       .merge(payload)
     session.flash('success', 'Préférences de notification enregistrées.')
+    flashProductAnalytics(session, 'notification_preference_updated', {
+      email_enabled: payload.email_enabled,
+      sms_enabled: payload.sms_enabled,
+      quiet_hours_enabled: payload.quiet_hours_enabled,
+    })
     return response.redirect().back()
   }
 }

@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 import { getMamContext } from '#services/access_service'
 import NotificationService from '#services/notification_service'
 import { features } from '#config/features'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 export default class ChildrenController {
   async create({ auth, inertia, response }: HttpContext) {
@@ -68,6 +69,7 @@ export default class ChildrenController {
       })
     })
     session.flash('success', `Dossier de ${firstName} créé. Invitez maintenant ses parents.`)
+    flashProductAnalytics(session, 'child_created')
     return response.redirect(`/enfants/${id}/responsables`)
   }
 

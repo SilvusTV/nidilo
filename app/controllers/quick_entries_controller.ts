@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { DateTime } from 'luxon'
 import { assertChildAccess, getMamContext } from '#services/access_service'
+import { flashProductAnalytics } from '#services/product_analytics_service'
 
 const kinds = new Set(['meal', 'nap', 'diaper'])
 
@@ -116,6 +117,8 @@ export default class QuickEntriesController {
       diaper: 'Change enregistré',
     }
     session.flash('success', `${confirmations[kind]} pour ${child.first_name} à ${time}.`)
+    if (inserted.length)
+      flashProductAnalytics(session, 'quick_entry_recorded', { entry_kind: kind })
     return response.redirect().back()
   }
 }
