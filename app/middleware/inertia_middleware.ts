@@ -4,6 +4,7 @@ import UserTransformer from '#transformers/user_transformer'
 import BaseInertiaMiddleware from '@adonisjs/inertia/inertia_middleware'
 import db from '@adonisjs/lucid/services/db'
 import env from '#start/env'
+import { resolvePosthogProjectKey } from '#services/public_analytics_config'
 import { getMamContext } from '#services/access_service'
 import type { ProductAnalyticsEvent } from '#services/product_analytics_service'
 
@@ -57,7 +58,9 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
       mamBrand: ctx.inertia.always(mam),
       mamRole: ctx.inertia.always(context?.role),
       unreadNotifications: ctx.inertia.always(Number(unread?.total ?? 0)),
-      posthogProjectKey: ctx.inertia.always(env.get('POSTHOG_PROJECT_KEY') ?? null),
+      posthogProjectKey: ctx.inertia.always(
+        resolvePosthogProjectKey(env.get('POSTHOG_PROJECT_KEY'))
+      ),
     }
   }
 

@@ -41,7 +41,8 @@ docker compose -f compose.production.yml up -d --build
 
 La clé publique PostHog se configure avec `POSTHOG_PROJECT_KEY` dans le `.env`
 du serveur. Elle est transmise aux pages à l'exécution et n'est pas intégrée aux
-assets Vite. Après une modification, redémarrer l'application PM2 ou recréer le
+assets Vite. Sans cette variable, Nidilo utilise la clé publique du projet
+PostHog Production. Après une modification, redémarrer l'application PM2 ou recréer le
 conteneur `app` (`docker compose -f compose.production.yml up -d --no-deps
 --force-recreate app`), puis recharger la page. Aucun nouveau build n'est nécessaire.
 ```
