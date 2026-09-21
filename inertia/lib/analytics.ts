@@ -1,4 +1,5 @@
 import posthog from 'posthog-js'
+import { sanitizeAnalyticsProperties } from './analytics_properties'
 
 export type AnalyticsConsent = {
   version: 1
@@ -25,9 +26,6 @@ const POSTHOG_KEY =
 const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com'
 const POSTHOG_UI_HOST = import.meta.env.VITE_POSTHOG_UI_HOST || 'https://eu.posthog.com'
 
-const PRIVATE_PROPERTY =
-  /(?:email|e-mail|name|nom|prenom|first_name|last_name|phone|telephone|address|adresse|password|mot_de_passe|token|captcha|child|enfant|note|comment|detail|content|message|allerg|health|sante|birth|naissance|user|workspace|mam|role)/i
-const URL_PROPERTY = /(?:url|uri|href|referrer|pathname|path)$/i
 const UUID_SEGMENT = /^[0-9a-f]{8}-[0-9a-f-]{27,}$/i
 const TOKEN_SEGMENT = /^[A-Za-z0-9_-]{20,}$/
 const DATE_SEGMENT = /^\d{4}-\d{2}-\d{2}$/
@@ -307,17 +305,10 @@ function safeAnalyticsUrl(value: string): string {
 
 function sanitizeCapturedEvent(event: any) {
   if (!event) return null
-  const properties = { ...event.properties }
-
-  for (const [key, value] of Object.entries(properties)) {
-    if (PRIVATE_PROPERTY.test(key)) {
-      delete properties[key]
-    } else if (typeof value === 'string' && URL_PROPERTY.test(key)) {
-      properties[key] = safeAnalyticsUrl(value)
-    }
+  return {
+    ...event,
+    properties: sanitizeAnalyticsProperties(event.properties ?? {}, safeAnalyticsUrl),
   }
-
-  return { ...event, properties }
 }
 
 function clearAnalyticsPersistence() {
