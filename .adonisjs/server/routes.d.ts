@@ -5,6 +5,7 @@ type ParamValue = string | number | bigint | boolean
 export type ScannedRoutes = {
   ALL: {
     'home': { paramsTuple?: []; params?: {} }
+    'legal.show': { paramsTuple: [ParamValue]; params: {'page': ParamValue} }
     'contact.store': { paramsTuple?: []; params?: {} }
     'webhooks.brevo': { paramsTuple?: []; params?: {} }
     'invitations.show': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
@@ -25,7 +26,11 @@ export type ScannedRoutes = {
     'super.mams.index': { paramsTuple?: []; params?: {} }
     'super.mams.store': { paramsTuple?: []; params?: {} }
     'super.mams.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'super.mams.invitations.resend': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
+    'super.mams.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'mam.logo': { paramsTuple?: []; params?: {} }
+    'children.photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'children.media.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'mediaId': ParamValue} }
     'staff.index': { paramsTuple?: []; params?: {} }
     'staff.invite': { paramsTuple?: []; params?: {} }
     'staff.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -40,6 +45,9 @@ export type ScannedRoutes = {
     'children.index': { paramsTuple?: []; params?: {} }
     'children.profile': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'children.profile.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'children.photo.upload': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'reports.photos.upload': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'children.media.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'mediaId': ParamValue} }
     'children.health.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'children.contacts.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'children.contacts.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'contactId': ParamValue} }
@@ -59,6 +67,7 @@ export type ScannedRoutes = {
   }
   GET: {
     'home': { paramsTuple?: []; params?: {} }
+    'legal.show': { paramsTuple: [ParamValue]; params: {'page': ParamValue} }
     'invitations.show': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'session.create': { paramsTuple?: []; params?: {} }
     'password.request': { paramsTuple?: []; params?: {} }
@@ -69,6 +78,8 @@ export type ScannedRoutes = {
     'mfa.setup': { paramsTuple?: []; params?: {} }
     'super.mams.index': { paramsTuple?: []; params?: {} }
     'mam.logo': { paramsTuple?: []; params?: {} }
+    'children.photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'children.media.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'mediaId': ParamValue} }
     'staff.index': { paramsTuple?: []; params?: {} }
     'quick.index': { paramsTuple?: []; params?: {} }
     'children.create': { paramsTuple?: []; params?: {} }
@@ -84,6 +95,7 @@ export type ScannedRoutes = {
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
+    'legal.show': { paramsTuple: [ParamValue]; params: {'page': ParamValue} }
     'invitations.show': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'session.create': { paramsTuple?: []; params?: {} }
     'password.request': { paramsTuple?: []; params?: {} }
@@ -94,6 +106,8 @@ export type ScannedRoutes = {
     'mfa.setup': { paramsTuple?: []; params?: {} }
     'super.mams.index': { paramsTuple?: []; params?: {} }
     'mam.logo': { paramsTuple?: []; params?: {} }
+    'children.photo': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'children.media.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'mediaId': ParamValue} }
     'staff.index': { paramsTuple?: []; params?: {} }
     'quick.index': { paramsTuple?: []; params?: {} }
     'children.create': { paramsTuple?: []; params?: {} }
@@ -118,9 +132,12 @@ export type ScannedRoutes = {
     'security.sessions.revoke': { paramsTuple?: []; params?: {} }
     'mfa.confirm': { paramsTuple?: []; params?: {} }
     'super.mams.store': { paramsTuple?: []; params?: {} }
+    'super.mams.invitations.resend': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
     'staff.invite': { paramsTuple?: []; params?: {} }
     'quick.store': { paramsTuple?: []; params?: {} }
     'children.store': { paramsTuple?: []; params?: {} }
+    'children.photo.upload': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'reports.photos.upload': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'children.health.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'children.contacts.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'children.archive': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -134,15 +151,17 @@ export type ScannedRoutes = {
     'staff.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'notifications.read': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
+  DELETE: {
+    'super.mams.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'children.media.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'mediaId': ParamValue} }
+    'children.contacts.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'contactId': ParamValue} }
+  }
   PUT: {
     'reports.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'children.profile.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'children.authorizations.update': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'kind': ParamValue} }
     'notifications.preferences.update': { paramsTuple?: []; params?: {} }
     'mam.settings.update': { paramsTuple?: []; params?: {} }
-  }
-  DELETE: {
-    'children.contacts.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'contactId': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

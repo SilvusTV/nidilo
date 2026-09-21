@@ -19,6 +19,18 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'legal.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/:page'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { page: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/legal_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/legal_controller').default['show']>>>
+    }
+  }
   'contact.store': {
     methods: ["POST"]
     pattern: '/contact'
@@ -259,6 +271,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/super_admin_mams_controller').default['update']>>>
     }
   }
+  'super.mams.invitations.resend': {
+    methods: ["POST"]
+    pattern: '/super-admin/invitations/:invitationId/resend'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { invitationId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/super_admin_mams_controller').default['resendInvitation']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/super_admin_mams_controller').default['resendInvitation']>>>
+    }
+  }
+  'super.mams.destroy': {
+    methods: ["DELETE"]
+    pattern: '/super-admin/mams/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/super_admin_mams_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/super_admin_mams_controller').default['destroy']>>>
+    }
+  }
   'mam.logo': {
     methods: ["GET","HEAD"]
     pattern: '/media/logo-mam'
@@ -269,6 +305,30 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/mam_media_controller').default['logo']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/mam_media_controller').default['logo']>>>
+    }
+  }
+  'children.photo': {
+    methods: ["GET","HEAD"]
+    pattern: '/enfants/:id/photo'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['profilePhoto']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['profilePhoto']>>>
+    }
+  }
+  'children.media.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/enfants/:id/media/:mediaId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; mediaId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['show']>>>
     }
   }
   'staff.index': {
@@ -437,6 +497,42 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/child_profiles_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/child_profiles_controller').default['update']>>>
+    }
+  }
+  'children.photo.upload': {
+    methods: ["POST"]
+    pattern: '/enfants/:id/photo'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['uploadProfilePhoto']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['uploadProfilePhoto']>>>
+    }
+  }
+  'reports.photos.upload': {
+    methods: ["POST"]
+    pattern: '/enfants/:id/photos-du-jour'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['uploadReportPhoto']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['uploadReportPhoto']>>>
+    }
+  }
+  'children.media.destroy': {
+    methods: ["DELETE"]
+    pattern: '/enfants/:id/media/:mediaId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; mediaId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/child_media_controller').default['destroy']>>>
     }
   }
   'children.health.store': {

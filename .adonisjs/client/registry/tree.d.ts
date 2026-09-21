@@ -3,6 +3,9 @@ import type { routes } from './index.ts'
 
 export interface ApiDefinition {
   home: typeof routes['home']
+  legal: {
+    show: typeof routes['legal.show']
+  }
   contact: {
     store: typeof routes['contact.store']
   }
@@ -43,6 +46,10 @@ export interface ApiDefinition {
       index: typeof routes['super.mams.index']
       store: typeof routes['super.mams.store']
       update: typeof routes['super.mams.update']
+      invitations: {
+        resend: typeof routes['super.mams.invitations.resend']
+      }
+      destroy: typeof routes['super.mams.destroy']
     }
   }
   mam: {
@@ -54,16 +61,14 @@ export interface ApiDefinition {
       update: typeof routes['mam.settings.update']
     }
   }
-  staff: {
-    index: typeof routes['staff.index']
-    invite: typeof routes['staff.invite']
-    update: typeof routes['staff.update']
-  }
-  quick: {
-    index: typeof routes['quick.index']
-    store: typeof routes['quick.store']
-  }
   children: {
+    photo: typeof routes['children.photo'] & {
+      upload: typeof routes['children.photo.upload']
+    }
+    media: {
+      show: typeof routes['children.media.show']
+      destroy: typeof routes['children.media.destroy']
+    }
     create: typeof routes['children.create']
     store: typeof routes['children.store']
     index: typeof routes['children.index']
@@ -83,11 +88,23 @@ export interface ApiDefinition {
     archive: typeof routes['children.archive']
     restore: typeof routes['children.restore']
   }
+  staff: {
+    index: typeof routes['staff.index']
+    invite: typeof routes['staff.invite']
+    update: typeof routes['staff.update']
+  }
+  quick: {
+    index: typeof routes['quick.index']
+    store: typeof routes['quick.store']
+  }
   reports: {
     show: typeof routes['reports.show']
     published: typeof routes['reports.published']
     calendar: typeof routes['reports.calendar']
     update: typeof routes['reports.update']
+    photos: {
+      upload: typeof routes['reports.photos.upload']
+    }
   }
   guardians: {
     index: typeof routes['guardians.index']

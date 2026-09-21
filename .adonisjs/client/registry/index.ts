@@ -12,6 +12,12 @@ const routes = {
     tokens: [{"old":"/","type":0,"val":"/","end":""}],
     types: placeholder as Registry['home']['types'],
   },
+  'legal.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/:page',
+    tokens: [{"old":"/:page","type":1,"val":"page","end":""}],
+    types: placeholder as Registry['legal.show']['types'],
+  },
   'contact.store': {
     methods: ["POST"],
     pattern: '/contact',
@@ -132,11 +138,35 @@ const routes = {
     tokens: [{"old":"/super-admin/mams/:id","type":0,"val":"super-admin","end":""},{"old":"/super-admin/mams/:id","type":0,"val":"mams","end":""},{"old":"/super-admin/mams/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['super.mams.update']['types'],
   },
+  'super.mams.invitations.resend': {
+    methods: ["POST"],
+    pattern: '/super-admin/invitations/:invitationId/resend',
+    tokens: [{"old":"/super-admin/invitations/:invitationId/resend","type":0,"val":"super-admin","end":""},{"old":"/super-admin/invitations/:invitationId/resend","type":0,"val":"invitations","end":""},{"old":"/super-admin/invitations/:invitationId/resend","type":1,"val":"invitationId","end":""},{"old":"/super-admin/invitations/:invitationId/resend","type":0,"val":"resend","end":""}],
+    types: placeholder as Registry['super.mams.invitations.resend']['types'],
+  },
+  'super.mams.destroy': {
+    methods: ["DELETE"],
+    pattern: '/super-admin/mams/:id',
+    tokens: [{"old":"/super-admin/mams/:id","type":0,"val":"super-admin","end":""},{"old":"/super-admin/mams/:id","type":0,"val":"mams","end":""},{"old":"/super-admin/mams/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['super.mams.destroy']['types'],
+  },
   'mam.logo': {
     methods: ["GET","HEAD"],
     pattern: '/media/logo-mam',
     tokens: [{"old":"/media/logo-mam","type":0,"val":"media","end":""},{"old":"/media/logo-mam","type":0,"val":"logo-mam","end":""}],
     types: placeholder as Registry['mam.logo']['types'],
+  },
+  'children.photo': {
+    methods: ["GET","HEAD"],
+    pattern: '/enfants/:id/photo',
+    tokens: [{"old":"/enfants/:id/photo","type":0,"val":"enfants","end":""},{"old":"/enfants/:id/photo","type":1,"val":"id","end":""},{"old":"/enfants/:id/photo","type":0,"val":"photo","end":""}],
+    types: placeholder as Registry['children.photo']['types'],
+  },
+  'children.media.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/enfants/:id/media/:mediaId',
+    tokens: [{"old":"/enfants/:id/media/:mediaId","type":0,"val":"enfants","end":""},{"old":"/enfants/:id/media/:mediaId","type":1,"val":"id","end":""},{"old":"/enfants/:id/media/:mediaId","type":0,"val":"media","end":""},{"old":"/enfants/:id/media/:mediaId","type":1,"val":"mediaId","end":""}],
+    types: placeholder as Registry['children.media.show']['types'],
   },
   'staff.index': {
     methods: ["GET","HEAD"],
@@ -221,6 +251,24 @@ const routes = {
     pattern: '/enfants/:id/dossier',
     tokens: [{"old":"/enfants/:id/dossier","type":0,"val":"enfants","end":""},{"old":"/enfants/:id/dossier","type":1,"val":"id","end":""},{"old":"/enfants/:id/dossier","type":0,"val":"dossier","end":""}],
     types: placeholder as Registry['children.profile.update']['types'],
+  },
+  'children.photo.upload': {
+    methods: ["POST"],
+    pattern: '/enfants/:id/photo',
+    tokens: [{"old":"/enfants/:id/photo","type":0,"val":"enfants","end":""},{"old":"/enfants/:id/photo","type":1,"val":"id","end":""},{"old":"/enfants/:id/photo","type":0,"val":"photo","end":""}],
+    types: placeholder as Registry['children.photo.upload']['types'],
+  },
+  'reports.photos.upload': {
+    methods: ["POST"],
+    pattern: '/enfants/:id/photos-du-jour',
+    tokens: [{"old":"/enfants/:id/photos-du-jour","type":0,"val":"enfants","end":""},{"old":"/enfants/:id/photos-du-jour","type":1,"val":"id","end":""},{"old":"/enfants/:id/photos-du-jour","type":0,"val":"photos-du-jour","end":""}],
+    types: placeholder as Registry['reports.photos.upload']['types'],
+  },
+  'children.media.destroy': {
+    methods: ["DELETE"],
+    pattern: '/enfants/:id/media/:mediaId',
+    tokens: [{"old":"/enfants/:id/media/:mediaId","type":0,"val":"enfants","end":""},{"old":"/enfants/:id/media/:mediaId","type":1,"val":"id","end":""},{"old":"/enfants/:id/media/:mediaId","type":0,"val":"media","end":""},{"old":"/enfants/:id/media/:mediaId","type":1,"val":"mediaId","end":""}],
+    types: placeholder as Registry['children.media.destroy']['types'],
   },
   'children.health.store': {
     methods: ["POST"],

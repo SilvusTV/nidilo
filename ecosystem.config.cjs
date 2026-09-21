@@ -2,8 +2,9 @@ module.exports = {
   apps: [
     {
       name: 'nidilo-web',
-      cwd: '/var/www/nidilo/build',
+      cwd: '/var/www/nidilo/website/build',
       script: 'bin/server.js',
+      interpreter: '/root/.nvm/versions/node/v24.15.0/bin/node',
       instances: 1,
       exec_mode: 'fork',
       autorestart: true,
@@ -15,8 +16,9 @@ module.exports = {
     },
     {
       name: 'nidilo-worker',
-      cwd: '/var/www/nidilo/build',
+      cwd: '/var/www/nidilo/website/build',
       script: 'ace.js',
+      interpreter: '/root/.nvm/versions/node/v24.15.0/bin/node',
       args: 'queue:work --queue=notifications,maintenance',
       instances: 1,
       exec_mode: 'fork',

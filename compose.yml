@@ -1,3 +1,5 @@
+name: nidilo
+
 services:
   app:
     build: .

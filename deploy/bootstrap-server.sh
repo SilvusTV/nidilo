@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR=/var/www/nidilo
+APP_DIR=/var/www/nidilo/website
 cd "$APP_DIR"
 
 if [[ ! -f .env ]]; then
