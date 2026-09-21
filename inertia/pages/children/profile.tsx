@@ -10,6 +10,7 @@ import {
   FileHeart,
   HeartPulse,
   Plus,
+  ImagePlus,
   Save,
   ShieldCheck,
   Trash2,
@@ -33,6 +34,7 @@ type Child = {
   emergencyInstructionsHtml?: string | null
   dietaryNotesHtml?: string | null
   routinesHtml?: string | null
+  photoUrl?: string | null
 }
 type Contact = {
   id: string
@@ -105,6 +107,7 @@ export default function ChildProfile({
   const [doctorPhone, setDoctorPhone] = useState(child.doctorPhone ?? '')
   const [careStartedAt, setCareStartedAt] = useState(child.careStartedAt?.slice(0, 10) ?? '')
   const [careEndedAt, setCareEndedAt] = useState(child.careEndedAt?.slice(0, 10) ?? '')
+  const [profilePhoto, setProfilePhoto] = useState<File | null>(null)
   const saveProfile = () =>
     router.put(
       `/enfants/${child.id}/dossier`,
@@ -121,6 +124,14 @@ export default function ChildProfile({
       },
       { preserveScroll: true }
     )
+  const uploadProfilePhoto = () => {
+    if (!profilePhoto) return
+    router.post(
+      `/enfants/${child.id}/photo`,
+      { photo: profilePhoto },
+      { forceFormData: true, preserveScroll: true, onSuccess: () => setProfilePhoto(null) }
+    )
+  }
 
   return (
     <div className="dashboard-page child-profile-page">
@@ -129,7 +140,38 @@ export default function ChildProfile({
         <ArrowLeft /> Retour aux enfants
       </Link>
       <header className="profile-hero">
-        <span className="child-avatar avatar-0">{child.firstName[0]}</span>
+        <div className="profile-photo-control">
+          {child.photoUrl ? (
+            <img
+              className="child-avatar child-avatar-photo"
+              src={child.photoUrl}
+              alt={`Photo de ${child.firstName}`}
+            />
+          ) : (
+            <span className="child-avatar avatar-0">{child.firstName[0]}</span>
+          )}
+          {role !== 'parent' && (
+            <div className="profile-photo-actions">
+              <label className="secondary-button compact">
+                <ImagePlus /> {child.photoUrl ? 'Changer' : 'Ajouter une photo'}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/avif"
+                  onChange={(event) => setProfilePhoto(event.target.files?.[0] ?? null)}
+                />
+              </label>
+              {profilePhoto && (
+                <button
+                  type="button"
+                  className="primary-button compact"
+                  onClick={uploadProfilePhoto}
+                >
+                  Envoyer
+                </button>
+              )}
+            </div>
+          )}
+        </div>
         <div>
           <p className="eyebrow accent">Dossier enfant</p>
           <h1>

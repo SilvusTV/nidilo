@@ -21,6 +21,7 @@ const PasswordResetsController = () => import('#controllers/password_resets_cont
 const MfaController = () => import('#controllers/mfa_controller')
 const SecuritySettingsController = () => import('#controllers/security_settings_controller')
 const LegalController = () => import('#controllers/legal_controller')
+const ChildMediaController = () => import('#controllers/child_media_controller')
 
 router.get('/', async ({ inertia }) => inertia.render('home', {})).as('home')
 router
@@ -83,6 +84,10 @@ router
       .delete('/super-admin/mams/:id', [SuperAdminMamsController, 'destroy'])
       .as('super.mams.destroy')
     router.get('/media/logo-mam', [MamMediaController, 'logo']).as('mam.logo')
+    router.get('/enfants/:id/photo', [ChildMediaController, 'profilePhoto']).as('children.photo')
+    router
+      .get('/enfants/:id/media/:mediaId', [ChildMediaController, 'show'])
+      .as('children.media.show')
     router.get('/personnel', [StaffController, 'index']).as('staff.index')
     router.post('/personnel/invitations', [StaffController, 'invite']).as('staff.invite')
     router.patch('/personnel/:id', [StaffController, 'update']).as('staff.update')
@@ -103,6 +108,15 @@ router
     router
       .put('/enfants/:id/dossier', [ChildProfilesController, 'update'])
       .as('children.profile.update')
+    router
+      .post('/enfants/:id/photo', [ChildMediaController, 'uploadProfilePhoto'])
+      .as('children.photo.upload')
+    router
+      .post('/enfants/:id/photos-du-jour', [ChildMediaController, 'uploadReportPhoto'])
+      .as('reports.photos.upload')
+    router
+      .delete('/enfants/:id/media/:mediaId', [ChildMediaController, 'destroy'])
+      .as('children.media.destroy')
     router
       .post('/enfants/:id/sante', [ChildProfilesController, 'addHealthEntry'])
       .as('children.health.store')

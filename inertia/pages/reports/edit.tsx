@@ -7,6 +7,7 @@ import {
   Coffee,
   FileHeart,
   MoonStar,
+  ImagePlus,
   Save,
   Smile,
   Sparkles,
@@ -19,9 +20,10 @@ import { useState } from 'react'
 import { RichTextEditor } from '~/components/rich_text_editor'
 
 type Item = { time: string; detail: string }
+type NapItem = { startTime: string; endTime: string; detail: string }
 type Report = {
   mood?: string
-  naps?: Item[]
+  naps?: NapItem[]
   meals?: Item[]
   diapers?: Item[]
   activities?: Item[]
@@ -30,7 +32,7 @@ type Report = {
   status?: string
 }
 type Props = {
-  child: { id: string; firstName: string; lastName: string }
+  child: { id: string; firstName: string; lastName: string; photoUrl?: string | null }
   role: string
   reportDate: string
   report: Report | null
@@ -43,6 +45,7 @@ type Props = {
     authorName: string
   }>
   healthDataEnabled: boolean
+  photos: Array<{ id: string; originalName: string; url: string }>
 }
 
 const quickEventLabels = { meal: 'Repas', nap: 'Sieste', diaper: 'Change' }
@@ -54,12 +57,16 @@ export default function EditReport({
   report,
   quickEvents,
   healthDataEnabled,
+  photos,
 }: Props) {
   const readonly = role === 'parent'
   const [mood, setMood] = useState(report?.mood ?? '')
   const [temperature, setTemperature] = useState(report?.temperature ?? '')
   const [noteHtml, setNoteHtml] = useState(report?.noteHtml ?? '')
-  const [naps, setNaps] = useState<Item[]>(report?.naps ?? [{ time: '', detail: '' }])
+  const [naps, setNaps] = useState<NapItem[]>(
+    report?.naps ?? [{ startTime: '', endTime: '', detail: '' }]
+  )
+  const [photo, setPhoto] = useState<File | null>(null)
   const [meals, setMeals] = useState<Item[]>(report?.meals ?? [{ time: '', detail: '' }])
   const [diapers, setDiapers] = useState<Item[]>(report?.diapers ?? [{ time: '', detail: '' }])
   const [activities, setActivities] = useState<Item[]>(
@@ -71,6 +78,14 @@ export default function EditReport({
       { mood, temperature, noteHtml, naps, meals, diapers, activities, status },
       { preserveScroll: true }
     )
+  const uploadPhoto = () => {
+    if (!photo) return
+    router.post(
+      `/enfants/${child.id}/photos-du-jour`,
+      { photo },
+      { forceFormData: true, preserveScroll: true, onSuccess: () => setPhoto(null) }
+    )
+  }
 
   return (
     <div className="report-page">
@@ -83,7 +98,11 @@ export default function EditReport({
         {role === 'parent' ? 'Retour au calendrier' : 'Retour à aujourd’hui'}
       </Link>
       <header className="report-heading">
-        <div className="child-avatar avatar-0">{child.firstName[0]}</div>
+        {child.photoUrl ? (
+          <img className="child-avatar child-avatar-photo" src={child.photoUrl} alt="" />
+        ) : (
+          <div className="child-avatar avatar-0">{child.firstName[0]}</div>
+        )}
         <div>
           <p className="eyebrow accent">Transmission quotidienne</p>
           <h1>La journée de {child.firstName}</h1>
@@ -183,14 +202,13 @@ export default function EditReport({
             ))}
           </div>
         </section>
-        <LogCard
+        <NapCard
           icon={MoonStar}
           title="Siestes"
           color="lavender"
           value={naps}
           onChange={setNaps}
           readonly={readonly}
-          placeholder="Ex. 45 min, sommeil calme"
         />
         <LogCard
           icon={Coffee}
@@ -265,6 +283,51 @@ export default function EditReport({
           ) : (
             <RichTextEditor value={noteHtml} onChange={setNoteHtml} label="Petit mot du jour" />
           )}
+          {(photos.length > 0 || !readonly) && (
+            <div className="report-photos">
+              {photos.map((item) => (
+                <figure key={item.id}>
+                  <img src={item.url} alt={item.originalName || `Photo de ${child.firstName}`} />
+                  {!readonly && (
+                    <button
+                      type="button"
+                      className="photo-remove"
+                      aria-label={`Supprimer ${item.originalName}`}
+                      onClick={() =>
+                        router.delete(`/enfants/${child.id}/media/${item.id}`, {
+                          preserveScroll: true,
+                        })
+                      }
+                    >
+                      ×
+                    </button>
+                  )}
+                </figure>
+              ))}
+            </div>
+          )}
+          {!readonly && photos.length < 6 && (
+            <div className="photo-uploader">
+              <label className="secondary-button compact">
+                <ImagePlus /> Choisir une photo
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/avif"
+                  onChange={(event) => setPhoto(event.target.files?.[0] ?? null)}
+                />
+              </label>
+              {photo && <span>{photo.name}</span>}
+              <button
+                className="primary-button compact"
+                type="button"
+                disabled={!photo}
+                onClick={uploadPhoto}
+              >
+                Ajouter
+              </button>
+              <small>6 photos maximum · 12 Mo par image</small>
+            </div>
+          )}
         </section>
       </div>
 
@@ -281,6 +344,80 @@ export default function EditReport({
         </footer>
       )}
     </div>
+  )
+}
+
+function NapCard({
+  icon: Icon,
+  title,
+  color,
+  value,
+  onChange,
+  readonly,
+}: {
+  icon: typeof MoonStar
+  title: string
+  color: string
+  value: NapItem[]
+  onChange: (items: NapItem[]) => void
+  readonly: boolean
+}) {
+  const update = (index: number, key: keyof NapItem, next: string) =>
+    onChange(value.map((item, i) => (i === index ? { ...item, [key]: next } : item)))
+  return (
+    <section className="form-card">
+      <div className="card-title">
+        <span className={`stat-icon ${color}`}>
+          <Icon />
+        </span>
+        <div>
+          <h2>{title}</h2>
+          <p>Heures de début et de fin</p>
+        </div>
+      </div>
+      <div className="log-list">
+        {value.map((item, index) => (
+          <div className="log-row nap-log-row" key={index}>
+            <label>
+              <span>Début</span>
+              <input
+                type="time"
+                value={item.startTime}
+                onChange={(e) => update(index, 'startTime', e.target.value)}
+                disabled={readonly}
+              />
+            </label>
+            <label>
+              <span>Fin</span>
+              <input
+                type="time"
+                min={item.startTime || undefined}
+                value={item.endTime}
+                onChange={(e) => update(index, 'endTime', e.target.value)}
+                disabled={readonly}
+              />
+            </label>
+            <input
+              type="text"
+              aria-label={`Détail - ${title}`}
+              placeholder="Ex. Sommeil calme"
+              value={item.detail}
+              onChange={(e) => update(index, 'detail', e.target.value)}
+              disabled={readonly}
+            />
+          </div>
+        ))}
+      </div>
+      {!readonly && (
+        <button
+          type="button"
+          className="text-button add-line"
+          onClick={() => onChange([...value, { startTime: '', endTime: '', detail: '' }])}
+        >
+          + Ajouter une sieste
+        </button>
+      )}
+    </section>
   )
 }
 

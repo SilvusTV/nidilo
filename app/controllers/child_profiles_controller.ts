@@ -81,6 +81,9 @@ export default class ChildProfilesController {
         careEndedAt: child.care_ended_at,
         dietaryNotesHtml: child.dietary_notes_html,
         routinesHtml: child.routines_html,
+        photoUrl: child.photo_key
+          ? `/enfants/${child.id}/photo?v=${encodeURIComponent(child.photo_key)}`
+          : null,
         ...(features.healthData
           ? {
               allergies: child.allergies,

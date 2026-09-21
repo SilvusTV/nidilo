@@ -5,6 +5,7 @@
 
 export const controllers = {
   BrevoWebhooks: () => import('#controllers/brevo_webhooks_controller'),
+  ChildMedia: () => import('#controllers/child_media_controller'),
   ChildProfiles: () => import('#controllers/child_profiles_controller'),
   Children: () => import('#controllers/children_controller'),
   ContactRequests: () => import('#controllers/contact_requests_controller'),
