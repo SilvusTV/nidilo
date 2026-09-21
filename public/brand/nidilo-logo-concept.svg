@@ -1,19 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
-  <title id="title">Nidilo</title>
-  <desc id="desc">Logo Nidilo, Le quotidien des enfants, bien entouré.</desc>
-  <rect width="1200" height="360" rx="44" fill="#f7f7f2"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1200 360">
+  <!-- Generator: Adobe Illustrator 30.8.1, SVG Export Plug-In . SVG Version: 2.1.4 Build 1)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #e9a674;
+      }
 
-  <g transform="translate(76 63)" fill="none" stroke-linecap="round" stroke-width="25">
-    <path d="M37 128C32 77 64 34 116 25" stroke="#2f5a46"/>
-    <path d="M143 34C188 51 207 94 194 138" stroke="#85a18a"/>
-    <path d="M181 163C145 201 86 204 47 169" stroke="#63826a"/>
-  </g>
-  <circle cx="198" cy="185" r="22" fill="#e7a678"/>
+      .st1 {
+        letter-spacing: 0em;
+      }
 
-  <text x="340" y="184" font-family="'DM Sans', 'Avenir Next', Arial, sans-serif" font-size="104" letter-spacing="-5">
-    <tspan fill="#2f5a46" font-weight="700">Nid</tspan><tspan fill="#789780" font-weight="600">ilo</tspan>
-  </text>
-  <text x="347" y="234" fill="#65756e" font-family="'DM Sans', 'Avenir Next', Arial, sans-serif" font-size="27" font-weight="500" letter-spacing="0.15">
-    Le quotidien des enfants, bien entouré.
-  </text>
+      .st1, .st2, .st3 {
+        fill: #7b946f;
+      }
+
+      .st4 {
+        letter-spacing: 0em;
+      }
+
+      .st4, .st5, .st6 {
+        fill: #224833;
+      }
+
+      .st3, .st7 {
+        font-family: Gadugi, Gadugi;
+      }
+
+      .st8 {
+        font-size: 285px;
+      }
+
+      .st9 {
+        fill: #f7f7f2;
+      }
+
+      .st7 {
+        font-size: 50px;
+      }
+
+      .st6 {
+        font-family: Gadugi-Bold, Gadugi;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <rect class="st9" width="1200" height="360" rx="44" ry="44"/>
+  <text class="st8" transform="translate(372.6 247.9)"><tspan class="st6" x="0" y="0">Nid</tspan><tspan class="st3" x="482.6" y="0">ilo</tspan></text>
+  <text class="st7" transform="translate(392.5 303.6)"><tspan class="st4" x="0" y="0">Chaque jour compte, </tspan><tspan class="st1" x="457.5" y="0">dès le premier</tspan></text>
+  <path class="st2" d="M248.1,32.4c-3.5,0-22.9-.8-32.7,11.9-10.1,13.2-4.4,31.9-2.7,36.6,4.5,12.8,13.8,18.6,22.9,29.2,10.1,11.8,12.3,15.4,15,19.9,0,0,7,11.7,10.8,24.1,14.5,30.7-21.8,59.8-15.4,74.5,11.7,3.7,67.4-7,75.5-95.7-8.1-67.4-49.6-100.7-73.5-100.6Z"/>
+  <path class="st2" d="M269.5,285.1c1.8-3,12.7-19.1,7-34.1-5.9-15.5-24.9-20.5-29.7-21.5-13.3-2.9-23.1,2-36.9,4.2-15.3,2.4-19.5,2.4-24.9,2.3,0,0-13.6-.1-26.2-3.5-33.8-3.7-39.5-50-55.4-52.2-9.3,8-29.4,61.1,41.8,114.5,61.6,28.5,111.7,10.7,124.2-9.8Z"/>
+  <path class="st5" d="M42.7,182c1.9,2.9,11.6,19.8,27.5,21.2,16.5,1.5,29.3-13.4,32.4-17.3,8.4-10.7,8.3-21.6,12.4-35,4.5-14.8,6.4-18.6,8.8-23.4,0,0,6.1-12.1,14.6-22,18.2-28.7,62.2-13.5,71.2-26.8-3.1-11.9-42-53.2-121.2-12.7-52.7,42.9-58.6,95.7-45.7,115.9Z"/>
+  <circle class="st0" cx="189.9" cy="159.9" r="48.3"/>
 </svg>

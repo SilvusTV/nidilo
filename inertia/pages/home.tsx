@@ -199,9 +199,10 @@ export default function Home({ cspNonce, csrfToken }: { cspNonce: string; csrfTo
             <p className="marketing-kicker">
               <Sparkles /> Application de transmission pour les MAM
             </p>
-            <h1 id="marketing-title">
+            <h1 id="marketing-title">Chaque jour compte, dès le premier.</h1>
+            <p className="marketing-hero-subtitle">
               Le cahier de transmission numérique qui laisse plus de temps aux enfants.
-            </h1>
+            </p>
             <p className="marketing-lead">
               Repas, siestes, changes, activités et petits mots : les professionnelles renseignent
               la journée en quelques gestes. Les familles retrouvent l’essentiel dans un espace
