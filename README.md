@@ -38,6 +38,12 @@ Pour le pilote en production, utiliser `compose.production.yml` et placer les va
 
 ```bash
 docker compose -f compose.production.yml up -d --build
+
+La clé publique PostHog se configure avec `POSTHOG_PROJECT_KEY` dans le `.env`
+du serveur. Elle est transmise aux pages à l'exécution et n'est pas intégrée aux
+assets Vite. Après une modification, redémarrer l'application PM2 ou recréer le
+conteneur `app` (`docker compose -f compose.production.yml up -d --no-deps
+--force-recreate app`), puis recharger la page. Aucun nouveau build n'est nécessaire.
 ```
 
 Cette variante expose uniquement Caddy sur les ports 80/443. PostgreSQL, Redis, MinIO et la console

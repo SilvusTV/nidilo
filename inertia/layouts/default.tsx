@@ -42,6 +42,7 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
   const mamBrand = children.props.mamBrand
   const unreadNotifications = children.props.unreadNotifications
   const mamRole = children.props.mamRole
+  const posthogProjectKey = children.props.posthogProjectKey
   const isSuperAdmin = user?.globalRole === 'super_admin'
   const isProfessional = mamRole === 'admin' || mamRole === 'assistant'
   const actorCategory = isSuperAdmin
@@ -105,6 +106,7 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
           url={url}
           actorCategory={actorCategory}
           confirmedEvent={flash.analyticsEvent}
+          posthogProjectKey={posthogProjectKey}
         />
         <Toaster position="top-center" richColors />
       </>
@@ -249,6 +251,7 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
         url={url}
         actorCategory={actorCategory}
         confirmedEvent={flash.analyticsEvent}
+        posthogProjectKey={posthogProjectKey}
       />
       <Toaster position="top-center" richColors />
     </div>

@@ -49,6 +49,9 @@ export default await Env.create(new URL('../', import.meta.url), {
   BREVO_SMS_SENDER: Env.schema.string.optional(),
   BREVO_WEBHOOK_TOKEN: Env.schema.string.optional(),
 
+  // Public browser analytics key, read by the server at runtime (not by Vite).
+  POSTHOG_PROJECT_KEY: Env.schema.string.optional(),
+
   // Pilot feature flags
   HEALTH_DATA_ENABLED: Env.schema.boolean.optional(),
   MFA_REQUIRED_FOR_ADMINS: Env.schema.boolean.optional(),

@@ -21,10 +21,8 @@ export const CONSENT_STORAGE_KEY = 'nidilo:cookie-consent:v1'
 export const CONSENT_DURATION_DAYS = 183
 export const ANALYTICS_ENVIRONMENT = import.meta.env.PROD ? 'prod' : 'local'
 
-const POSTHOG_KEY =
-  import.meta.env.VITE_POSTHOG_KEY || 'phc_nysrbeRyCzcmRUEPUvcXydivetaWx5XNi4YpW4dDYCN5'
-const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://eu.i.posthog.com'
-const POSTHOG_UI_HOST = import.meta.env.VITE_POSTHOG_UI_HOST || 'https://eu.posthog.com'
+const POSTHOG_HOST = 'https://eu.i.posthog.com'
+const POSTHOG_UI_HOST = 'https://eu.posthog.com'
 
 const UUID_SEGMENT = /^[0-9a-f]{8}-[0-9a-f-]{27,}$/i
 const TOKEN_SEGMENT = /^[A-Za-z0-9_-]{20,}$/
@@ -134,7 +132,7 @@ export function analyticsArea(path: string): string {
   return 'other'
 }
 
-export function configureAnalytics(consent: AnalyticsConsent | null) {
+export function configureAnalytics(consent: AnalyticsConsent | null, projectKey: string | null) {
   if (!consent?.analytics) {
     if (initialized) {
       posthog.stopSessionRecording()
@@ -145,8 +143,10 @@ export function configureAnalytics(consent: AnalyticsConsent | null) {
     return
   }
 
+  if (!projectKey) return
+
   if (!initialized) {
-    posthog.init(POSTHOG_KEY, {
+    posthog.init(projectKey, {
       api_host: POSTHOG_HOST,
       ui_host: POSTHOG_UI_HOST,
       defaults: '2026-05-30',

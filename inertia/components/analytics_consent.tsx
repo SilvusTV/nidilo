@@ -18,10 +18,12 @@ export default function AnalyticsConsentManager({
   url,
   actorCategory,
   confirmedEvent,
+  posthogProjectKey,
 }: {
   url: string
   actorCategory?: string | null
   confirmedEvent?: ConfirmedAnalyticsEvent | null
+  posthogProjectKey: string | null
 }) {
   const [consent, setConsent] = useState<AnalyticsConsent | null>(() => readAnalyticsConsent())
   const [open, setOpen] = useState(() => readAnalyticsConsent() === null)
@@ -30,20 +32,20 @@ export default function AnalyticsConsentManager({
   const [replay, setReplay] = useState(consent?.replay ?? false)
 
   useEffect(() => {
-    configureAnalytics(consent)
+    configureAnalytics(consent, posthogProjectKey)
     if (consent?.analytics) {
       setAnalyticsContext(actorCategory)
       capturePageView(url)
       captureConfirmedAnalyticsEvent(confirmedEvent)
     }
-  }, [actorCategory, confirmedEvent, consent, url])
+  }, [actorCategory, confirmedEvent, consent, posthogProjectKey, url])
 
   useEffect(() => installInteractionTracking(), [])
 
   const choose = (nextAnalytics: boolean, nextReplay: boolean) => {
     const next = createAnalyticsConsent(nextAnalytics, nextReplay)
     storeAnalyticsConsent(next)
-    configureAnalytics(next)
+    configureAnalytics(next, posthogProjectKey)
     setConsent(next)
     setAnalytics(next.analytics)
     setReplay(next.replay)

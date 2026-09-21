@@ -13,7 +13,9 @@ git pull --ff-only
 npm install
 npm run build
 
-cp .env build/.env
+# Keep runtime settings editable after compilation. Restart PM2 after editing
+# APP_DIR/.env; no asset rebuild is needed for POSTHOG_PROJECT_KEY changes.
+ln -sfn ../.env build/.env
 (
   cd build
   npm install --omit=dev
